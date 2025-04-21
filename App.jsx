@@ -1,0 +1,145 @@
+import React, { useEffect } from 'react';
+import { Provider } from 'react-redux';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { NavigationContainer } from '@react-navigation/native';
+
+import StackNavigator from './src/navigation/StackNavigator';
+import { store } from './src/store/store';
+import { ThemeProvider } from './src/constants/ThemeContext';
+import { LoaderProvider } from './src/constants/LoaderContext';
+import { 
+  getFcmToken, 
+  onBackgroundNotification, 
+  onForegroundNotification, 
+  requestUserPermission 
+} from './src/services/notificationService';
+import { Alert, Platform, PermissionsAndroid } from 'react-native';
+import { MenuProvider } from './src/constants/MenuContext';
+import { TaskProvider } from './src/constants/TaskContext';
+import { PendingProvider } from './src/constants/PendingContext';
+import { UserProvider } from './src/constants/UserContext';
+import messaging from '@react-native-firebase/messaging';
+import PushNotification from 'react-native-push-notification';
+import RNLocation from 'react-native-location'
+
+RNLocation.configure({
+  distanceFilter: 100, // Meters
+  desiredAccuracy: {
+    ios: "best",
+    android: "balancedPowerAccuracy"
+  },
+  // Android only
+  androidProvider: "auto",
+  interval: 5000, // Milliseconds
+  fastestInterval: 10000, // Milliseconds
+  maxWaitTime: 5000, // Milliseconds
+  // iOS Only
+  activityType: "other",
+  allowsBackgroundLocationUpdates: false,
+  headingFilter: 1, // Degrees
+  headingOrientation: "portrait",
+  pausesLocationUpdatesAutomatically: false,
+  showsBackgroundLocationIndicator: false,
+})
+
+const App = () => {
+  PushNotification.configure({
+    onNotification: function (notification) {
+      console.log('[LOCAL NOTIF] =>', notification);
+    },
+    requestPermissions: Platform.OS === 'ios',
+  });
+
+  PushNotification.createChannel(
+    {
+      channelId: 'background-location',
+      channelName: 'Background Tracking Alerts',
+      channelDescription: 'A channel for background location updates',
+      soundName: 'default',
+      importance: 4,
+      vibrate: true,
+    },
+    (created) => console.log(`🔔 Notification channel '${created}' created`)
+  );
+
+  const requestLocationPermissions = async () => {
+    if (Platform.OS === 'android') {
+      await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION);
+      await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION);
+
+      if (Platform.Version >= 29) {
+        await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_BACKGROUND_LOCATION);
+      }
+    }
+  };
+
+  useEffect(() => {
+    requestUserPermission();
+    const unsubscribe = messaging().onMessage(async remoteMessage => {
+      Alert.alert('New Notification', JSON.stringify(remoteMessage.notification?.body || ''));
+    });
+
+    messaging().onNotificationOpenedApp(remoteMessage => {
+      console.log('Notification opened from background state:', remoteMessage.notification);
+    });
+
+    messaging().getInitialNotification().then(remoteMessage => {
+      if (remoteMessage) {
+        console.log('Notification caused app to open from quit state:', remoteMessage.notification);
+      }
+    });
+
+    return unsubscribe;
+  }, []);
+
+  const requestUserPermission = async () => {
+    const authStatus = await messaging().requestPermission();
+    const enabled = 
+      authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+      authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+
+    if (enabled) {
+      console.log('Notification permission status:', authStatus);
+      getFcmToken();
+    } else {
+      Alert.alert('Push Notification permission denied');
+    }
+  };
+
+  const getFcmToken = async () => {
+    try {
+      const fcmToken = await messaging().getToken();
+      if (fcmToken) {
+        console.log('FCM Token:', fcmToken);
+      } else {
+        console.log('Failed to get FCM token');
+      }
+    } catch (error) {
+      console.error('Error fetching FCM token:', error);
+    }
+  };
+
+  return (
+    <SafeAreaProvider>
+      <UserProvider>
+        <MenuProvider>
+          <TaskProvider>
+            <PendingProvider>
+              <Provider store={store}>
+                <ThemeProvider>
+                  <LoaderProvider>
+                    <NavigationContainer>
+                      <StackNavigator />
+                    </NavigationContainer>
+                  </LoaderProvider>
+                </ThemeProvider>
+              </Provider>
+            </PendingProvider>
+          </TaskProvider>
+        </MenuProvider>
+      </UserProvider>
+    </SafeAreaProvider>
+  );
+};
+
+export default App;

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "377634067325",
+    "project_id": "nexis-app-development",
+    "storage_bucket": "nexis-app-development.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:377634067325:android:b9bed438cc9da4425f7214",
+        "android_client_info": {
+          "package_name": "com.nexis365.nexis365"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCagR6Eti9FAdJtG1BhwIogHzca2KBQ41k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

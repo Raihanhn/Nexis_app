@@ -1,0 +1,118 @@
+apply plugin: "com.android.application"
+apply plugin: "com.facebook.react"
+
+react {
+   
+}
+
+def enableSeparateBuildPerCPUArchitecture = false
+def enableProguardInReleaseBuilds = false
+def jscFlavor = 'org.webkit:android-jsc:+'
+def reactNativeArchitectures() {
+    def value = project.getProperties().get("reactNativeArchitectures")
+    return value ? value.split(",") : ["armeabi-v7a", "x86", "x86_64", "arm64-v8a"]
+}
+
+android {
+    namespace "com.nexis365.nexis365"
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    ndkVersion rootProject.ext.ndkVersion
+
+    defaultConfig {
+        applicationId "com.nexis365.nexis365"
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode 1
+        versionName "1.0"
+    }
+
+    splits {
+        abi {
+            reset()
+            enable enableSeparateBuildPerCPUArchitecture
+            universalApk false
+            include(*reactNativeArchitectures())
+        }
+    }
+
+    signingConfigs {
+        debug {
+            storeFile file('debug.keystore')
+            storePassword 'android'
+            keyAlias 'androiddebugkey'
+            keyPassword 'android'
+        }
+    }
+
+    buildTypes {
+        debug {
+            signingConfig signingConfigs.debug
+        }
+        release {
+            signingConfig signingConfigs.debug
+            minifyEnabled enableProguardInReleaseBuilds
+            proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+        }
+    }
+
+    applicationVariants.all { variant ->
+        variant.outputs.each { output ->
+            def versionCodes = ["armeabi-v7a": 1, "x86": 2, "arm64-v8a": 3, "x86_64": 4]
+            def abiFilter = output.filters.find { filter -> filter.filterType == "ABI" }
+            if (abiFilter != null) {
+                def abi = abiFilter.identifier
+                output.versionCodeOverride = defaultConfig.versionCode * 1000 + versionCodes.get(abi)
+            }
+        }
+    }
+
+    // compileOptions {
+    //     sourceCompatibility JavaVersion.VERSION_11
+    //     targetCompatibility JavaVersion.VERSION_11
+    // }
+}
+
+dependencies {
+    implementation("com.facebook.react:react-android:0.71.6") // Specify the React Native version explicitly
+    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.0.0")
+    implementation platform('com.google.firebase:firebase-bom:33.5.1')
+    implementation 'com.google.firebase:firebase-analytics'
+    implementation 'com.google.firebase:firebase-messaging:23.4.1'
+
+
+    debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}")
+    debugImplementation("com.facebook.flipper:flipper-network-plugin:${FLIPPER_VERSION}") {
+        exclude group: 'com.squareup.okhttp3', module: 'okhttp'
+    }
+    debugImplementation("com.facebook.flipper:flipper-fresco-plugin:${FLIPPER_VERSION}")
+
+    if (hermesEnabled.toBoolean()) {
+        implementation("com.facebook.react:hermes-android:0.71.6")
+    } else {
+        implementation("org.webkit:android-jsc:+")
+    }
+}
+
+
+repositories {
+    google() // Google's Maven repository
+    mavenCentral() // Maven Central repository
+       maven { url("$rootDir/../node_modules/react-native/android") }
+        maven { url("https://jitpack.io") }
+}
+
+apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle")
+applyNativeModulesAppBuildGradle(project)
+
+project.ext.react = [
+    enableHermes: true  // <- here
+]
+
+
+project.ext.vectoricons = [
+    iconFontNames: ['Feather.ttf', 'FontAwesome.ttf', 'MaterialIcons.ttf', 'Ionicons.ttf', 'Papper.ttf', 'MaterialCommunityIcons.ttf']
+]
+
+apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"
+apply plugin: 'com.google.gms.google-services'
+
