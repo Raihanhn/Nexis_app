@@ -11,6 +11,16 @@
 
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
+	<key>UIBackgroundModes</key>
+	<key>UIBackgroundModes</key>
+	<array>
+	<string>location</string>
+	<string>fetch</string>
+	</array>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>We need your location to track your attendance.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>We need your location to track your attendance.</string>
 	<key>CFBundleDisplayName</key>
 	<string>app</string>
 	<key>CFBundleExecutable</key>

@@ -11,13 +11,18 @@ export default function Documents() {
     navigation.navigate('Lead');
   };
 
+
+  const handleManagerNavigation = () => {
+    navigation.navigate('DocumentManager');
+  };
+
   const buttons = [
     { name: 'EOD', route: 'EodForm', type: 'eod' },
     { name: 'BOC', route: 'BocForm', type: 'boc' },
     { name: 'INCIDENT', route: 'IncidentForm', type: 'incident' },
   ];
   
-  const handleNavigation = (button) => {
+  const handleNavigation = (button) => { 
     console.log('Navigating to Screen:', button.route);
     navigation.navigate('Webview', { component: button.route, type: button.type });
   };
@@ -56,7 +61,7 @@ export default function Documents() {
           paddingVertical: 14,
           paddingHorizontal: 10,
           marginBottom: 12,
-          borderRadius: 10,
+          borderRadius: 10, 
           alignItems: 'center',
           justifyContent: 'center',
           elevation: 3,
@@ -66,6 +71,23 @@ export default function Documents() {
           LEAD
         </Text>
       </TouchableOpacity>
+      <TouchableOpacity
+        onPress={handleManagerNavigation}
+        style={{
+          backgroundColor: '#21AFF0',
+          paddingVertical: 14,
+          paddingHorizontal: 10,
+          marginBottom: 12,
+          borderRadius: 10, 
+          alignItems: 'center',
+          justifyContent: 'center',
+          elevation: 3,
+        }}
+      >
+        <Text style={{ color: '#fff', fontSize: 16, fontWeight: 'bold', textAlign: 'center' }}>
+          DOCUMENT MANAGER
+        </Text>
+      </TouchableOpacity>  
     </View>
   );
 }

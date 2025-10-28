@@ -1,4 +1,4 @@
-package com.nexis365.nexis365;
+package com.nexis365.saas;
 
 import android.app.Application;
 import com.facebook.react.PackageList;

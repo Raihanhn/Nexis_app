@@ -7,13 +7,7 @@ import StackNavigator from './src/navigation/StackNavigator';
 import { store } from './src/store/store';
 import { ThemeProvider } from './src/constants/ThemeContext';
 import { LoaderProvider } from './src/constants/LoaderContext';
-import { 
-  getFcmToken, 
-  onBackgroundNotification, 
-  onForegroundNotification, 
-  requestUserPermission 
-} from './src/services/notificationService';
-import { Alert, Platform, PermissionsAndroid } from 'react-native';
+import { Alert, Platform } from 'react-native';
 import { MenuProvider } from './src/constants/MenuContext';
 import { TaskProvider } from './src/constants/TaskContext';
 import { PendingProvider } from './src/constants/PendingContext';
@@ -35,7 +29,7 @@ RNLocation.configure({
   maxWaitTime: 5000, // Milliseconds
   // iOS Only
   activityType: "other",
-  allowsBackgroundLocationUpdates: false,
+  allowsBackgroundLocationUpdates: true,
   headingFilter: 1, // Degrees
   headingOrientation: "portrait",
   pausesLocationUpdatesAutomatically: false,
@@ -61,17 +55,6 @@ const App = () => {
     },
     (created) => console.log(`🔔 Notification channel '${created}' created`)
   );
-
-  const requestLocationPermissions = async () => {
-    if (Platform.OS === 'android') {
-      await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION);
-      await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION);
-
-      if (Platform.Version >= 29) {
-        await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.ACCESS_BACKGROUND_LOCATION);
-      }
-    }
-  };
 
   useEffect(() => {
     requestUserPermission();

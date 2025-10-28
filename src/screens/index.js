@@ -44,13 +44,59 @@ import Lead from './Lead';
 import CampaignForm from './CampaignForm';
 import LeadForm from './LeadForm';
 import ViewCampaign from './ViewCampaign';
+import ViewLead from './ViewLead';
+import EditCampaignForm from './EditCampaignForm';
+import EditLeadForm from './EditLeadForm'; 
+import Call from './Call'; 
+import Email from './Email'; 
+import Minutes from './Minutes'; 
+import Cases from './Cases'; 
+import Quote from './Quote'; 
+import Deal from './Deal'; 
+import Onboard from './Onboard'; 
+import Contract from './Contract'; 
+import EditCall from './EditCall'; 
+import EditEmail from './EditEmail'; 
+import EditMinutes from './EditMinutes'; 
+import EditCases from './EditCases'; 
+import EditQuote from './EditQuote'; 
+import EditDeal from './EditDeal'; 
+import EditContract from './EditContract'; 
+import DocumentManager from './DocumentManager'; 
+import ViewCategory from './ViewCategory'; 
+import AddCategory from './AddCategory'; 
+import AddDocument from './AddDocument';  
+import ViewDocument from './ViewDocument';  
 
 export const screens = {
   IncidentForm,
+  ViewCategory,
+  AddCategory,
+  AddDocument,
+  ViewDocument,
+  Call,
+  EditCall,
+  EditEmail,
+  EditMinutes,
+  EditCases,
+  EditQuote,
+  EditDeal,
+  EditContract,
+  Email,
+  Minutes,
+  Cases,
+  Quote,
+  Deal,
+  Onboard,
+  Contract,
+  EditCampaignForm,
+  EditLeadForm,
   ViewCampaign,
   LeadForm,
   CampaignForm,
   Lead,
+  DocumentManager,
+  ViewLead,
   BackgroundExample,
   Nextbot,
   EodForm,

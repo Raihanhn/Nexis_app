@@ -1,4 +1,4 @@
-package com.nexis365.nexis365;
+package com.nexis365.saas;
 
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;

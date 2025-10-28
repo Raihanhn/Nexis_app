@@ -14,12 +14,12 @@ def reactNativeArchitectures() {
 }
 
 android {
-    namespace "com.nexis365.nexis365"
+    namespace "com.nexis365.saas"
     compileSdkVersion rootProject.ext.compileSdkVersion
     ndkVersion rootProject.ext.ndkVersion
 
     defaultConfig {
-        applicationId "com.nexis365.nexis365"
+        applicationId "com.nexis365.saas"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

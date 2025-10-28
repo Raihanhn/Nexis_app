@@ -38,6 +38,10 @@ const Nextbot = () => {
           } else {
             console.log('Microphone permission denied');
           }
+
+          const getService = await Voice.getSpeechRecognitionServices();
+          console.log('getService for audio:', getService);
+
         }
       };
       

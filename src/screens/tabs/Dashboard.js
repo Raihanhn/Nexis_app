@@ -663,7 +663,7 @@ const Dashboard = () => {
             // <View style={{padding: 20, alignItems: 'center'}}>
             <View style={{
               width: "100%",
-              backgroundColor: "#fff",
+              backgroundColor: theme === 'dark' ? '#444' : '#fff',
               padding: 16,
               borderRadius: 10,
               borderLeftWidth: 4,
@@ -675,7 +675,7 @@ const Dashboard = () => {
               alignItems: 'center', 
               borderLeftColor: '#dc3545'
             }}>
-              <Text style={{fontSize: 16, color: theme === 'dark' ? '#808080' : '#808080', }}>No Data Found</Text>
+              <Text style={{fontSize: 16, color: theme === 'dark' ? '#fff' : '#808080', }}>No Data Found</Text>
             </View>
         ) : (
         jobs.map((item) => (
@@ -856,8 +856,6 @@ const Dashboard = () => {
         shadowRadius: 5,
         elevation: 3,
         marginTop:10,
-      
-      
       },
       rowContainer: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
       expandedText: { marginTop: 10, fontSize: 14, color: '#555' },
@@ -865,7 +863,7 @@ const Dashboard = () => {
       menuOption: { paddingVertical: 5 },
       menuOptionText: { fontSize: 14, color: theme === 'dark' ? '#fff' : '#757575', },
       noDataContainer: { padding: 20, alignItems: 'center' },
-      noDataText: { fontSize: 16, color: theme === 'dark' ? '#808080' : '#808080', },
+      noDataText: { fontSize: 16, color: theme === 'dark' ? '#fff' : '#808080', },
     });
 
     const formatDate = (timestamp) => {
@@ -889,7 +887,7 @@ const Dashboard = () => {
           {tasks.length === 0 ? (
             <View style={{
               width: "100%",
-              backgroundColor: "#fff",
+              backgroundColor: theme === 'dark' ? '#444' : '#fff',
               padding: 16,
               borderRadius: 10,
               borderLeftWidth: 4,
@@ -905,16 +903,16 @@ const Dashboard = () => {
             </View>
           ) : (
             tasks.map((task, index) => (
-              <View key={index} style={[styles.card, { borderLeftColor: '#6FCF97',position: 'relative', zIndex: activeMenuIndex === index ? 1000 : 1 }]}> 
+              <View key={index} style={[styles.card, { borderLeftColor: '#6FCF97', backgroundColor: theme === 'dark' ? '#444' : '#fff',position: 'relative', zIndex: activeMenuIndex === index ? 1000 : 1 }]}> 
                 <TouchableOpacity onPress={() => handleRowPress(index)} style={styles.rowContainer}>
                  <View >
-                 <Text style={{fontSize: 16, fontWeight: 'bold',color: theme === 'dark' ? '#757575' : '#757575',}}> {formatDate(task.date)}</Text>
-                    <Text style={ { width: 250,marginLeft:5,fontSize: 16, color: theme === 'dark' ? '#757575' : '#757575',}}>
+                 <Text style={{fontSize: 16, fontWeight: 'bold',color: theme === 'dark' ? '#fff' : '#757575',}}> {formatDate(task.date)}</Text>
+                    <Text style={ { width: 250,marginLeft:5,fontSize: 16, color: theme === 'dark' ? '#fff' : '#757575',}}>
                    {task.title}
                   </Text>
                  </View>
                   <TouchableOpacity onPress={() => toggleMenu(index)}>
-                    <MaterialIcons name="more-vert" size={20} color={theme === 'dark' ? '#000' : '#000'} style={{alignItems:'flex-end'}} />
+                    <MaterialIcons name="more-vert" size={20} color={theme === 'dark' ? '#fff' : '#000'} style={{alignItems:'flex-end'}} />
                   </TouchableOpacity>
                 </TouchableOpacity>
                 {expandedRow === index && <Text style={styles.expandedText}>{task.detail}</Text>}
@@ -981,10 +979,10 @@ const Dashboard = () => {
   const styles = StyleSheet.create({
     container: { flex: 1, backgroundColor: theme === "dark" ? "#333" : "#fff", padding: 16 },
     title: { fontSize: 22, fontWeight: "bold", marginVertical: 10, color: theme === "dark" ? "#fff" : "#757575" },
-    card: { backgroundColor: "#f9f9f9", padding: 8, borderRadius: 10, marginBottom: 8, elevation: 2, },
+    card: {  backgroundColor: theme === 'dark' ? '#444' : '#f9f9f9', padding: 8, borderRadius: 10, marginBottom: 8, elevation: 2, },
     row: { flexDirection: "row", justifyContent: "space-between", marginBottom: 5, },
-    label: { fontSize: 16, fontWeight: "bold", color: "#757575", flex: 1, textAlign: 'justify' },
-    value: { fontSize: 16, color: "#555", flex: 1, textAlign: 'justify'  },
+    label: { fontSize: 16, fontWeight: "bold", color: theme === 'dark' ? '#fff' : '#333', flex: 1, textAlign: 'justify' },
+    value: { fontSize: 16, color: theme === 'dark' ? '#fff' : '#333', flex: 1, textAlign: 'justify'  },
   });
   
 
@@ -1054,10 +1052,10 @@ const Dashboard = () => {
     const styles = StyleSheet.create({
       container: { flex: 1, backgroundColor: theme === "dark" ? "#333" : "#fff", padding: 10,marginBottom:80 },
       title: { fontSize: 22, fontWeight: "bold", marginVertical: 10, color: theme === "dark" ? "#fff" : "#757575" },
-      card: { backgroundColor: "#f9f9f9", padding: 12, borderRadius: 10, marginBottom: 10, elevation: 2 },
+      card: { backgroundColor: theme === 'dark' ? '#444' : '#fff', padding: 12, borderRadius: 10, marginBottom: 10, elevation: 2 },
       row: { flexDirection: "row", justifyContent: "space-between", marginBottom: 5 },
-      label: { fontSize: 16, fontWeight: "bold", color: "#757575" },
-      value: { fontSize: 16, color: "#555" },
+      label: { fontSize: 16, fontWeight: "bold", color: theme === 'dark' ? '#fff' : '#000',},
+      value: { fontSize: 16, color: theme === 'dark' ? '#fff' : '#000', },
     });
 
         // Format timestamp to readable date (DD/MM/YYYY format)
@@ -1113,7 +1111,7 @@ const Dashboard = () => {
         <View
           style={{
             flexDirection: "row",
-            backgroundColor: "#f5f5f5",
+             backgroundColor: theme === 'dark' ? '#444' : '#f5f5f5',
             padding: 10,
             borderBottomWidth: 1,
             borderBottomColor: "#ddd",
@@ -1124,8 +1122,8 @@ const Dashboard = () => {
               key={index}
               style={{ flex: 1, flexDirection: "row", alignItems: "center", }}
             >
-              <Text style={{ fontSize:12,padding:5,fontWeight: "bold", marginRight: 3 , color:'#757575'}}>{header}</Text>
-              <Icon name="sort" size={14} color="#555" />
+              <Text style={{ fontSize:12,padding:5,fontWeight: "bold", marginRight: 3 , color: theme === 'dark' ? '#fff' : '#000',}}>{header}</Text>
+              <Icon name="sort" size={14} style={{color: theme === 'dark' ? '#fff' : '#000',}} />
             </TouchableOpacity>
           ))}
         </View>
@@ -1148,7 +1146,7 @@ const Dashboard = () => {
         ))} */}
          <View style={{
               width: "100%",
-              backgroundColor: "#fff",
+              backgroundColor: theme === 'dark' ? '#444' : '#fff',
               padding: 16,
               borderRadius: 10,
               borderLeftWidth: 4,
@@ -1160,7 +1158,7 @@ const Dashboard = () => {
               alignItems: 'center', 
               borderLeftColor: '#dc3545'
             }}>
-              <Text style={{fontSize: 16, color: theme === 'dark' ? '#808080' : '#808080', }}>No Data Found</Text>
+              <Text style={{fontSize: 16, color: theme === 'dark' ? '#fff' : '#000', }}>No Data Found</Text>
             </View>
       </View>
     );

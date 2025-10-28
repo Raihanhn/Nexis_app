@@ -1,9 +1,9 @@
 // CampaignForm.js
 import React, { useEffect, useState } from 'react';
-import { View, Text, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DateTimePicker from "@react-native-community/datetimepicker";
-import DocumentPicker from 'react-native-document-picker';
+import { launchCamera } from 'react-native-image-picker';
 import {components} from '../components';
 import axios from 'axios'; 
 
@@ -16,7 +16,9 @@ const LeadForm = ({ theme }) => {
    const [followUpDate, setFollowUpDate] = useState(new Date());
    const [appointmentDate, setAppointmentDate] = useState(new Date());
    const [targetDate, setTargetDate] = useState(new Date()); 
-   const [documentFile, setDocumentFile] = useState(null);
+   const [imageFile, setImageFile] = useState(null); 
+   const [imageUri, setImageUri] = useState(null);
+
   const [formData, setFormData] = useState({
     leadName: '',
     campaignid:'',
@@ -32,8 +34,6 @@ const LeadForm = ({ theme }) => {
     username: '',
     username2: '',
     managerid: '',
-    preferredName:'',
-    gender:'',
     address:'',
     city:'',
     state:'',
@@ -44,13 +44,12 @@ const LeadForm = ({ theme }) => {
     billingAddress:'',
     clientStory:'',
     note:'',
-    managerid:'',
     addemail:'',
     addphone:'',
     type:'',
     ndis:'', 
     priority: '',
-    status:'', 
+    status:'1',  
   }); 
 
   const [showDobPicker, setShowDobPicker] = useState(false);
@@ -79,22 +78,7 @@ const LeadForm = ({ theme }) => {
     setShowTargetPicker(Platform.OS === 'ios');
   };
 
-  const handleDocumentPick = async () => {
-    try {
-      const res = await DocumentPicker.pick({
-        type: [DocumentPicker.types.allFiles], // Allow all file types
-      });
-  
-      console.log(res);
-      setDocumentFile(res[0]);
-    } catch (err) {
-      if (DocumentPicker.isCancel(err)) {
-        console.log('User cancelled the picker');
-      } else {
-        console.error('Unknown error: ', err);
-      }
-    }
-  };
+
 
   useEffect(() => {
     const fetchCampaigns = async () => {
@@ -167,24 +151,68 @@ const LeadForm = ({ theme }) => {
         loadUserData();
       }, []);
 
+
+        const captureImage = async () => {
+          const options = {
+            mediaType: 'photo',
+            quality: 0.7,
+            saveToPhotos: false,
+            includeBase64: false,
+            isFrontCamera: true,
+          };
+      
+          const response = await launchCamera(options);
+      
+          if (response.didCancel) {
+            Alert.alert('Cancelled', 'User cancelled image capture');
+            return null;
+          } else if (response.errorCode) {
+            Alert.alert('Error', `Camera Error: ${response.errorMessage}`);
+            return null;
+          } else if (!response.assets || response.assets.length === 0) {
+            Alert.alert('Error', 'No image captured. Try again.');
+            return null;
+          }
+      
+          return response.assets[0];
+        };
+
+
+        const handleImagePick = async () => {
+          const image = await captureImage(); // your existing function to open camera or gallery
+          if (!image) return;
+        
+          setImageUri(image.uri);
+          setImageFile({
+            uri: image.uri,
+            type: image.type || 'image/jpeg',
+            name: image.fileName || 'photo.jpg',
+          });
+        };
+        
       const handleSubmit = async () => {
         if (!userId || !refDb) {
           Alert.alert("Error", "User ID or Ref DB missing");
           return;
         }
-      
+
+        if (imageFile) {
+          formDataToSubmit.append('images', imageFile);
+        }
+        
+        
+
         const formDataToSubmit = new FormData();
         formDataToSubmit.append('userid', userId);
         formDataToSubmit.append('ref_db', refDb);
-        // formDataToSubmit.append('date', Math.floor(date.getTime() / 1000));
         formDataToSubmit.append('leadName', formData.leadName);
         formDataToSubmit.append('campaignid', formData.campaignid);
         formDataToSubmit.append('title', formData.title);
-        formDataToSubmit.append('title', formData.firstName);
+        formDataToSubmit.append('firstName', formData.firstName);
         formDataToSubmit.append('surName', formData.surName);
         formDataToSubmit.append('preferredName', formData.preferredName);
         formDataToSubmit.append('gender', formData.gender);
-        formDataToSubmit.append('dob', dob);
+        formDataToSubmit.append('dob', Math.floor(dob.getTime() / 1000));
         formDataToSubmit.append('address', formData.address);
         formDataToSubmit.append('city', formData.city);
         formDataToSubmit.append('state', formData.state);
@@ -199,21 +227,14 @@ const LeadForm = ({ theme }) => {
         formDataToSubmit.append('addemail', formData.addemail);
         formDataToSubmit.append('addphone', formData.addphone);
         formDataToSubmit.append('type', formData.type);
-        formDataToSubmit.append('priority', formData.priority);
+        formDataToSubmit.append('priority', formData.priority);  
         formDataToSubmit.append('ndis', formData.ndis);
-        formDataToSubmit.append('followUpDate', followUpDate);
-        formDataToSubmit.append('appointmentDate', appointmentDate);
-        formDataToSubmit.append('targetDate', targetDate);
+        formDataToSubmit.append('followUpDate', Math.floor(followUpDate.getTime() / 1000));
+        formDataToSubmit.append('appointmentDate', Math.floor(appointmentDate.getTime() / 1000));
+        formDataToSubmit.append('targetDate', Math.floor(targetDate.getTime() / 1000)); 
         formDataToSubmit.append('status', formData.status);
-        
-          // Check if documentFile exists and append to form data
-    if (documentFile) {
-      formDataToSubmit.append('document', {
-        uri: documentFile.uri,
-        type: documentFile.type,
-        name: documentFile.name,
-      });
-    }
+        formDataToSubmit.append('images', imageFile);
+
       
         try {
           const response = await axios.post("https://app.nexis365.com/api/leads-form", formDataToSubmit, {
@@ -222,7 +243,7 @@ const LeadForm = ({ theme }) => {
             },
           });
       
-          console.log("Incident data sent:", formDataToSubmit);
+          console.log("Leads data sent:", formDataToSubmit);  
       
           if (response.data.success) {
             Alert.alert("Success", "Leads record submitted successfully!");
@@ -245,13 +266,14 @@ const LeadForm = ({ theme }) => {
 
   return (
     <View style={[styles.formContainer, { backgroundColor: theme === 'dark' ? '#333' : '#fff'}]}>
-      <Text style={styles.formTitle}>Create Lead</Text>
+      <Text style={[styles.formTitle, {color: theme === 'dark' ? '#fff' : '#000'}]}>Create Lead</Text>
 
       <TextInput
         placeholder="Lead Name"
+        placeholderTextColor={theme === 'dark' ? '#fff' : '#000'}
         value={formData.leadName}
-        onChangeText={(text) => handleChange('LeadName', text)}
-        style={styles.input}
+        onChangeText={(text) => handleChange('leadName', text)}
+        style={[styles.input, { color: theme === 'dark' ? '#fff' : '#000' }]}
       />
 
       <components.Dropdown
@@ -286,23 +308,26 @@ const LeadForm = ({ theme }) => {
 
        <TextInput
         placeholder="First Name"
+        placeholderTextColor={theme === 'dark' ? '#fff' : '#000'}
         value={formData.firstName}
-        onChangeText={(text) => handleChange('FirstName', text)}
-        style={styles.input}
+        onChangeText={(text) => handleChange('firstName', text)}
+        style={[styles.input, { color: theme === 'dark' ? '#fff' : '#000' }]}
       />
 
        <TextInput
         placeholder="Sur Name"
+        placeholderTextColor={theme === 'dark' ? '#fff' : '#000'}
         value={formData.surName}
-        onChangeText={(text) => handleChange('SurName', text)}
-        style={styles.input}
+        onChangeText={(text) => handleChange('surName', text)}
+        style={[styles.input, { color: theme === 'dark' ? '#fff' : '#000' }]}
       />
 
       <TextInput
         placeholder="Preferred Name"
+        placeholderTextColor={theme === 'dark' ? '#fff' : '#000'}
         value={formData.preferredName}
-        onChangeText={(text) => handleChange('PreferredName', text)}
-        style={styles.input}
+        onChangeText={(text) => handleChange('preferredName', text)}
+        style={[styles.input, { color: theme === 'dark' ? '#fff' : '#000' }]}
       />
        <components.Dropdown
         items={[
@@ -320,7 +345,7 @@ const LeadForm = ({ theme }) => {
         
 
       <TouchableOpacity onPress={() => setShowDobPicker(true)} style={styles.input}>
-        <Text style={{ color: theme === 'dark' ? '#000' : '#000', paddingTop: 4, paddingBottom: 4 }}>
+        <Text style={{ color: theme === 'dark' ? '#fff' : '#000', paddingTop: 4, paddingBottom: 4 }}>
           Date of Birth: {dob.toDateString()}
         </Text>
       </TouchableOpacity>
@@ -334,104 +359,120 @@ const LeadForm = ({ theme }) => {
       )}
       <TextInput
         placeholder="Address"
+        placeholderTextColor={theme === 'dark' ? '#fff' : '#000'}
         value={formData.address}
         onChangeText={(text) => handleChange('address', text)}
-        style={styles.input}
+        style={[styles.input, { color: theme === 'dark' ? '#fff' : '#000' }]}
       />
       <TextInput
         placeholder="City"
+        placeholderTextColor={theme === 'dark' ? '#fff' : '#000'}
         value={formData.city}
         onChangeText={(text) => handleChange('city', text)}
-        style={styles.input}
+        style={[styles.input, { color: theme === 'dark' ? '#fff' : '#000' }]}
       />
        <TextInput
         placeholder="State"
+        placeholderTextColor={theme === 'dark' ? '#fff' : '#000'}
         value={formData.state}
         onChangeText={(text) => handleChange('state', text)}
-        style={styles.input}
+        style={[styles.input, { color: theme === 'dark' ? '#fff' : '#000' }]}
       />
        <TextInput
         placeholder="Zip"
+        placeholderTextColor={theme === 'dark' ? '#fff' : '#000'}
         value={formData.zip}
         onChangeText={(text) => handleChange('zip', text)}
-        style={styles.input}
+        style={[styles.input, { color: theme === 'dark' ? '#fff' : '#000' }]}
       />
        <TextInput
         placeholder="Country"
+        placeholderTextColor={theme === 'dark' ? '#fff' : '#000'}
         value={formData.country}
         onChangeText={(text) => handleChange('country', text)}
-        style={styles.input}
+        style={[styles.input, { color: theme === 'dark' ? '#fff' : '#000' }]}
       />
        <TextInput
         placeholder="Email Address"
+        placeholderTextColor={theme === 'dark' ? '#fff' : '#000'}
         value={formData.email}
         onChangeText={(text) => handleChange('email', text)}
-        style={styles.input}
+        style={[styles.input, { color: theme === 'dark' ? '#fff' : '#000' }]}
       />
        <TextInput
         placeholder="Phone Number"
+        placeholderTextColor={theme === 'dark' ? '#fff' : '#000'}
         value={formData.phone}
         onChangeText={(text) => handleChange('phone', text)}
-        style={styles.input}
+        style={[styles.input, { color: theme === 'dark' ? '#fff' : '#000' }]}
       />
 
-       <TouchableOpacity onPress={handleDocumentPick} style={styles.uploadButton}>
-        <Text style={[styles.input, {color: theme === 'dark' ? '#000' : '#000'}]} >Upload File</Text>
-        {documentFile && documentFile.name && (
-          <Text style={{ marginTop: 10, color: '#000' }}> 
-            Selected File: {documentFile.name}
+      <TouchableOpacity onPress={handleImagePick} style={styles.uploadButton}>
+        <Text style={[styles.input, { color: theme === 'dark' ? '#fff' : '#000' }]}>
+          Upload Image
+        </Text>
+        {imageFile && imageFile.name && (
+          <Text style={{ marginTop: 10, color: '#000' }}>
+            Selected Image: {imageFile.name}
           </Text>
-          )}
-       </TouchableOpacity>
+        )}
+      </TouchableOpacity>
+
+
 
       <TextInput
         placeholder="Billing Address"
+        placeholderTextColor={theme === 'dark' ? '#fff' : '#000'}
         value={formData.billingAddress}
         onChangeText={(text) => handleChange('billingAddress', text)}
-        style={[styles.input, { height: 100, textAlignVertical: 'top' }]}
+        style={[styles.input, { height: 100, textAlignVertical: 'top', color: theme === 'dark' ? '#fff' : '#000' }]}
         multiline={true}
         numberOfLines={4}
       />
 
        <TextInput
         placeholder="Client Story/Enquiry (Note)"
+        placeholderTextColor={theme === 'dark' ? '#fff' : '#000'}
         value={formData.clientStory}
         onChangeText={(text) => handleChange('clientStory', text)}
-        style={[styles.input, { height: 100, textAlignVertical: 'top' }]}
+        style={[styles.input, { height: 100, textAlignVertical: 'top', color: theme === 'dark' ? '#fff' : '#000' }]}
         multiline={true}
         numberOfLines={4}
       />
 
        <TextInput
         placeholder="Important Notes for Staff"
+        placeholderTextColor={theme === 'dark' ? '#fff' : '#000'}
         value={formData.note}
         onChangeText={(text) => handleChange('note', text)}
-        style={[styles.input, { height: 100, textAlignVertical: 'top' }]}
+        style={[styles.input, { height: 100, textAlignVertical: 'top', color: theme === 'dark' ? '#fff' : '#000' }]}
         multiline={true}
         numberOfLines={4}
       />
 
       
-            <components.Dropdown
-              items={userOptions}
-              selectedValue={formData.managerid}
-              onValueChange={(value) => 
-                setFormData((prevData) => ({ ...prevData, managerid: value })) 
-              }
-              style={{ flex: 1, marginBottom: 12 }}
-            />
+        <components.Dropdown
+          items={userOptions}
+          selectedValue={formData.managerid}
+          onValueChange={(value) => 
+            setFormData((prevData) => ({ ...prevData, managerid: value })) 
+          }
+          style={{ flex: 1, marginBottom: 12 }}
+        />
 
       <TextInput
         placeholder="Additional Email"
+        placeholderTextColor={theme === 'dark' ? '#fff' : '#000'}
         value={formData.addemail}
         onChangeText={(text) => handleChange('addemail', text)} 
-        style={styles.input}
+        style={[styles.input, { color: theme === 'dark' ? '#fff' : '#000' }]}
       />
        <TextInput
         placeholder="Additional Phone"
+        placeholderTextColor={theme === 'dark' ? '#fff' : '#000'}
         value={formData.addphone}
         onChangeText={(text) => handleChange('addphone', text)}
-        style={styles.input}
+        style={[styles.input, { color: theme === 'dark' ? '#fff' : '#000' }]}
       />
 
       <components.Dropdown
@@ -464,13 +505,14 @@ const LeadForm = ({ theme }) => {
 
       <TextInput
         placeholder="NDIS Number"
+        placeholderTextColor={theme === 'dark' ? '#fff' : '#000'}
         value={formData.ndis}
         onChangeText={(text) => handleChange('ndis', text)}
-        style={styles.input}
+        style={[styles.input, { color: theme === 'dark' ? '#fff' : '#000' }]} 
       />
 
      <TouchableOpacity onPress={() => setShowFollowUpPicker(true)} style={styles.input}>
-        <Text style={{ color: theme === 'dark' ? '#000' : '#000', paddingTop: 4, paddingBottom: 4 }}>
+        <Text style={{ color: theme === 'dark' ? '#fff' : '#000', paddingTop: 4, paddingBottom: 4 }}>
           Follow Up Date: {followUpDate.toDateString()}
         </Text>
       </TouchableOpacity>
@@ -484,7 +526,7 @@ const LeadForm = ({ theme }) => {
       )}
        {/* Appointment Date */}
        <TouchableOpacity onPress={() => setShowAppointmentPicker(true)} style={styles.input}>
-        <Text style={{ color: theme === 'dark' ? '#000' : '#000', paddingTop: 4, paddingBottom: 4 }}>
+        <Text style={{ color: theme === 'dark' ? '#fff' : '#000', paddingTop: 4, paddingBottom: 4 }}>
           Appointment Date: {appointmentDate.toDateString()}
         </Text>
       </TouchableOpacity>
@@ -499,7 +541,7 @@ const LeadForm = ({ theme }) => {
 
       {/* Target Date */}
       <TouchableOpacity onPress={() => setShowTargetPicker(true)} style={styles.input}>
-        <Text style={{ color: theme === 'dark' ? '#000' : '#000', paddingTop: 4, paddingBottom: 4 }}>
+        <Text style={{ color: theme === 'dark' ? '#fff' : '#000', paddingTop: 4, paddingBottom: 4 }}>
           Target Date: {targetDate.toDateString()}
         </Text>
       </TouchableOpacity>
@@ -525,7 +567,7 @@ const LeadForm = ({ theme }) => {
       />
 
       <TouchableOpacity style={styles.submitButton} onPress={handleSubmit}>
-        <Text style={styles.submitButtonText}>Submit</Text>
+        <Text style={styles.submitButtonText}>Submit</Text> 
       </TouchableOpacity>
     </View>
   );
@@ -547,14 +589,15 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   input: {
-    borderWidth: 1,
-    borderColor: '#ccc',
+    borderWidth: 2,
+    // borderColor: '#ccc',
+    borderColor: '#55CBF5',
     padding: 10,
     marginBottom: 12,
-    borderRadius: 6,
+    borderRadius: 10,
   },
   submitButton: {
-    backgroundColor: '#28a745',
+    backgroundColor: '#21AFF0',
     padding: 12,
     borderRadius: 6,
     marginTop: 10,

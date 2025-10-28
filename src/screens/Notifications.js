@@ -6,6 +6,7 @@ import { svg } from '../assets/svg';
 import { useTheme } from '../constants/ThemeContext';
 import BottomTabBar from './tabs/BottomTabBar';
 import { components } from '../components';
+import FastImage from 'react-native-fast-image';
 import moment from 'moment';
 
 const Notifications = () => {
@@ -120,16 +121,14 @@ const Notifications = () => {
       showsVerticalScrollIndicator={false}
     >
       {(loadingTasks || loadingShifts) ? (
-        <Text
-          style={{
-            textAlign: 'center',
-            color: theme === 'dark' ? '#ccc' : '#555',
-            marginTop: 40,
-            fontSize: 16,
-          }}
-        >
-           Data is loading, please wait...
-        </Text>
+      
+         <View style={{ alignItems: 'center', justifyContent: 'center', height: 200 }}>
+          <FastImage
+            source={require('../assets/moving.gif')}
+            style={{ width: 100, height: 100 }}
+            resizeMode={FastImage.resizeMode.contain}
+          />
+          </View>
       ) : (
         <>
           {todayShifts.map((item, index) => {

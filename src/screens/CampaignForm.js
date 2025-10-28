@@ -57,9 +57,7 @@ const CampaignForm = ({ theme }) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  // const handleSubmit = () => {
-  //   console.log('Submitted Data:', formData);
-  // };
+
 
   const handleSubmit = async () => {
     try {
@@ -103,13 +101,14 @@ const CampaignForm = ({ theme }) => {
 
   return (
     <View style={[styles.formContainer, { backgroundColor: theme === 'dark' ? '#333' : '#fff'}]}>
-      <Text style={styles.formTitle}>Create Campaign</Text>
+      <Text style={[styles.formTitle, {color: theme === 'dark' ? '#fff' : '#000'}]}> Campaign Form</Text>
 
       <TextInput
         placeholder="Campaign Name"
+        placeholderTextColor={theme === 'dark' ? '#fff' : '#000'}
         value={formData.campaignName}
         onChangeText={(text) => handleChange('campaignName', text)}
-        style={styles.input}
+        style={[styles.input, { color: theme === 'dark' ? '#fff' : '#000' }]}
       />
 
 
@@ -125,21 +124,24 @@ const CampaignForm = ({ theme }) => {
 
       <TextInput
         placeholder="Plan"
+        placeholderTextColor={theme === 'dark' ? '#fff' : '#000'}
         value={formData.plan}
         onChangeText={(text) => handleChange('plan', text)}
-        style={styles.input}
+        style={[styles.input, { color: theme === 'dark' ? '#fff' : '#000' }]}
       />
       <TextInput
         placeholder="Possibility"
+        placeholderTextColor={theme === 'dark' ? '#fff' : '#000'}
         value={formData.possibility}
         onChangeText={(text) => handleChange('possibility', text)}
-        style={styles.input}
+        style={[styles.input, { color: theme === 'dark' ? '#fff' : '#000' }]}
       />
       <TextInput
         placeholder="Opportunity"
+        placeholderTextColor={theme === 'dark' ? '#fff' : '#000'}
         value={formData.opportunity}
         onChangeText={(text) => handleChange('opportunity', text)}
-        style={styles.input}
+        style={[styles.input, { color: theme === 'dark' ? '#fff' : '#000' }]}
       />
 
       <components.Dropdown
@@ -151,7 +153,7 @@ const CampaignForm = ({ theme }) => {
         ]}
         selectedValue={formData.priority}
         onValueChange={(value) =>
-          setFormData((prevData) => ({ ...prevData, priority: value }))
+          setFormData((prevData) => ({ ...prevData, priority: value })) 
         }
         style={{ marginBottom: 12 }}
       />
@@ -179,14 +181,15 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   input: {
-    borderWidth: 1,
+    borderWidth: 2,
     borderColor: '#ccc',
+    borderColor: '#55CBF5',
     padding: 10,
     marginBottom: 12,
-    borderRadius: 6,
+    borderRadius: 10,
   },
   submitButton: {
-    backgroundColor: '#28a745',
+    backgroundColor: '#21AFF0',
     padding: 12,
     borderRadius: 6,
     marginTop: 10,

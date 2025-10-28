@@ -324,9 +324,10 @@ const IncidentForm = ({theme}) => {
 
           {/* Date Picker */}
           <Text  style={{color: theme === 'dark' ? '#fff' : '#000'}}>Posting Date:</Text>
-        <TouchableOpacity onPress={showPicker} style={styles.input}>
+        <TouchableOpacity onPress={showPicker} style={[styles.input, { backgroundColor: theme === 'dark' ? '#333' : '#fff' }]}>
           <Text style={{
-           color: theme === 'dark' ? '#000' : '#000',
+           color: theme === 'dark' ? '#fff' : '#000',
+           backgroundColor: theme === 'dark' ? '#333' : '#fff', 
            paddingTop:4,
            paddingBottom:4,
            }} 
@@ -347,8 +348,9 @@ const IncidentForm = ({theme}) => {
             value={formData.email}
             placeholder="Email will appear here"
             editable={false}
-            containerStyle={{ marginBottom: 10 }}
             placeholderTextColor='gray'
+            containerStyle={{ marginBottom: 10,  backgroundColor: theme === 'dark' ? '#333' : '#fff' }}
+            textStyle={{ color: theme === 'dark' ? 'white' : 'black' }}
             />
 
         <Text style={{color: theme === 'dark' ? '#fff' : '#000'}}>Employee Name:</Text>
@@ -358,8 +360,8 @@ const IncidentForm = ({theme}) => {
           onChangeText={(text) =>
             setFormData({ ...formData, employeeName: text })
           }
-          containerStyle={{ marginBottom: 10 }}
-          placeholderTextColor='gray'
+          containerStyle={{ marginBottom: 10,  backgroundColor: theme === 'dark' ? '#333' : '#fff' }}
+          textStyle={{ color: theme === 'dark' ? 'white' : 'black' }}
           />
 
            <Text style={{color: theme === 'dark' ? '#fff' : '#000'}}>Phone:</Text>
@@ -370,8 +372,8 @@ const IncidentForm = ({theme}) => {
               onChangeText={(text) =>
                 setFormData({ ...formData, phone: text })
               }
-              containerStyle={{ marginBottom: 10 }}
-              placeholderTextColor='gray'
+              containerStyle={{ marginBottom: 10,  backgroundColor: theme === 'dark' ? '#333' : '#fff' }}
+              textStyle={{ color: theme === 'dark' ? 'white' : 'black' }}
               />
 
         {/* <Text  style={{color: theme === 'dark' ? '#fff' : '#000'}}>DOB:</Text>
@@ -447,144 +449,170 @@ const IncidentForm = ({theme}) => {
         />
 
          <Text  style={{color: theme === 'dark' ? '#fff' : '#000'}}>Incident Location:</Text>
-         <components.InputField
-            placeholder=''
+         <TextInput 
+            placeholder='Describe Incident Location...' 
             value={formData.incident}
             onChangeText={(text) =>
               setFormData({ ...formData, incident: text })
             }
-            containerStyle={{ marginBottom: 10 }}
-            placeholderTextColor='gray'
+            style={[styles.input, {color: theme === 'dark' ? '#fff' : '#000',
+          backgroundColor: theme === 'dark' ? '#333' : '#fff',
+          }]}
+            placeholderTextColor={theme === 'dark' ? '#fff' : '#000'}
           />
 
          <Text style={[styles.sectionTitle, {color: theme === 'dark' ? '#fff' : '#000'}]}>Witness Detail</Text>
 
          <Text style={{color: theme === 'dark' ? '#fff' : '#000'}}>Details of Witness 1 (If any)</Text>
-         <components.InputField
-            placeholder=''
+         <TextInput
+           placeholder="Enter details of Witness 1 (optional)"
             value={formData.witness1}
             onChangeText={(text) =>
               setFormData({ ...formData, witness1: text })
             }
-            containerStyle={{ marginBottom: 10 }}
-            placeholderTextColor='gray'
+            style={[styles.input, {color: theme === 'dark' ? '#fff' : '#000',
+            backgroundColor: theme === 'dark' ? '#333' : '#fff',
+            }]}
+            placeholderTextColor={theme === 'dark' ? '#fff' : '#000'}
           />
 
          <Text style={{color: theme === 'dark' ? '#fff' : '#000'}}>D.O.B</Text>
-         <components.InputField
-            placeholder=''
+         <TextInput
+            placeholder='Enter Date of Birth'
             value={formData.dob1}
             onChangeText={(text) =>
               setFormData({ ...formData, dob1: text })
             }
-            containerStyle={{ marginBottom: 10 }}
-            placeholderTextColor='gray'
+             style={[styles.input, {color: theme === 'dark' ? '#fff' : '#000', 
+            backgroundColor: theme === 'dark' ? '#333' : '#fff',
+            }]}
+            placeholderTextColor={theme === 'dark' ? '#fff' : '#000'}
           />
            <Text style={{color: theme === 'dark' ? '#fff' : '#000'}}>Address</Text>
-         <components.InputField
-            placeholder=''
+           <TextInput
+            placeholder='Enter your address'
             value={formData.address1}
             onChangeText={(text) =>
               setFormData({ ...formData, address1: text })
             }
-            containerStyle={{ marginBottom: 10 }}
-            placeholderTextColor='gray'
-          />
+            style={[styles.input, {color: theme === 'dark' ? '#fff' : '#000', 
+            backgroundColor: theme === 'dark' ? '#333' : '#fff',
+            }]}
+            placeholderTextColor={theme === 'dark' ? '#fff' : '#000'}
+           />
            <Text style={{color: theme === 'dark' ? '#fff' : '#000'}}>Phone:</Text>
-          <components.InputField
-           placeholder=''
+          <TextInput
+           placeholder='Enter your phone number'
            value={formData.phone1}
            keyboardType="phone-pad"
            onChangeText={(text) =>
              setFormData({ ...formData, phone1: text })
            }
-           containerStyle={{ marginBottom: 10 }}
-           placeholderTextColor='gray'
+           style={[styles.input, {color: theme === 'dark' ? '#fff' : '#000', 
+            backgroundColor: theme === 'dark' ? '#333' : '#fff',
+            }]}
+            placeholderTextColor={theme === 'dark' ? '#fff' : '#000'}
            />
            <Text style={{color: theme === 'dark' ? '#fff' : '#000'}}>Detail of Witness 2 (If any)</Text>
-         <components.InputField
-            placeholder=''
+         <TextInput
+            placeholder='Enter details of Witness 2 (optional)'
             value={formData.witness2}
             onChangeText={(text) =>
               setFormData({ ...formData, witness2: text })
             }
-            containerStyle={{ marginBottom: 10 }}
-            placeholderTextColor='gray'
+            style={[styles.input, {color: theme === 'dark' ? '#fff' : '#000', 
+            backgroundColor: theme === 'dark' ? '#333' : '#fff',
+            }]}
+            placeholderTextColor={theme === 'dark' ? '#fff' : '#000'}
           />
            <Text style={{color: theme === 'dark' ? '#fff' : '#000'}}>D.O.B</Text>
-         <components.InputField
-            placeholder=''
+         <TextInput
+            placeholder='Enter Date of Birth'
             value={formData.dob2}
             onChangeText={(text) =>
               setFormData({ ...formData, dob2: text })
             }
-            containerStyle={{ marginBottom: 10 }}
-            placeholderTextColor='gray'
+            style={[styles.input, {color: theme === 'dark' ? '#fff' : '#000', 
+            backgroundColor: theme === 'dark' ? '#333' : '#fff',
+            }]}
+            placeholderTextColor={theme === 'dark' ? '#fff' : '#000'}
           />
            <Text style={{color: theme === 'dark' ? '#fff' : '#000'}}>Address</Text>
-         <components.InputField
-            placeholder=''
+         <TextInput
+            placeholder='Enter your address'
             value={formData.address2}
             onChangeText={(text) =>
               setFormData({ ...formData, address2: text })
             }
-            containerStyle={{ marginBottom: 10 }}
-            placeholderTextColor='gray'
+            style={[styles.input, {color: theme === 'dark' ? '#fff' : '#000', 
+            backgroundColor: theme === 'dark' ? '#333' : '#fff',
+            }]}
+            placeholderTextColor={theme === 'dark' ? '#fff' : '#000'}
           />
             <Text style={{color: theme === 'dark' ? '#fff' : '#000'}}>Phone:</Text>
-            <components.InputField
-            placeholder=''
+            <TextInput
+            placeholder='Enter your phone number'
             value={formData.phone2}
             keyboardType="phone-pad"
             onChangeText={(text) =>
               setFormData({ ...formData, phone2: text })
             }
-            containerStyle={{ marginBottom: 10 }}
-            placeholderTextColor='gray'
+            style={[styles.input, {color: theme === 'dark' ? '#fff' : '#000', 
+            backgroundColor: theme === 'dark' ? '#333' : '#fff',
+            }]}
+            placeholderTextColor={theme === 'dark' ? '#fff' : '#000'} 
             />
 
             <Text style={[styles.sectionTitle, {color: theme === 'dark' ? '#fff' : '#000'}]}>Incident Detail</Text>
 
             <Text style={{color: theme === 'dark' ? '#fff' : '#000'}}>Date of Incident </Text>
-            <components.InputField
-            placeholder=''
+            <TextInput
+            placeholder='Enter date of incident (e.g., 2025-05-15)'
             value={formData.incidentdate}
             onChangeText={(text) =>
               setFormData({ ...formData, incidentdate: text })
             }
-            containerStyle={{ marginBottom: 10 }}
-            placeholderTextColor='gray'
+            style={[styles.input, {color: theme === 'dark' ? '#fff' : '#000', 
+            backgroundColor: theme === 'dark' ? '#333' : '#fff',
+            }]}
+            placeholderTextColor={theme === 'dark' ? '#fff' : '#000'} 
           />
             <Text style={{color: theme === 'dark' ? '#fff' : '#000'}}>Approximate time of incident</Text>
-            <components.InputField
-            placeholder=''
+            <TextInput
+            placeholder='Enter approximate time (e.g., 14:30)'
             value={formData.timeofincident}
             onChangeText={(text) =>
               setFormData({ ...formData, timeofincident: text })
             }
-            containerStyle={{ marginBottom: 10 }}
-            placeholderTextColor='gray'
+            style={[styles.input, {color: theme === 'dark' ? '#fff' : '#000', 
+            backgroundColor: theme === 'dark' ? '#333' : '#fff',
+            }]}
+            placeholderTextColor={theme === 'dark' ? '#fff' : '#000'} 
           />
             <Text style={{color: theme === 'dark' ? '#fff' : '#000'}}>What Happened? </Text>
-            <components.InputField
-            placeholder=''
+            <TextInput
+            placeholder='Describe what happened'
             value={formData.happend}
             onChangeText={(text) =>
               setFormData({ ...formData, happend: text })
             }
-            containerStyle={{ marginBottom: 10 }}
-            placeholderTextColor='gray'
+            style={[styles.input, {color: theme === 'dark' ? '#fff' : '#000', 
+            backgroundColor: theme === 'dark' ? '#333' : '#fff',
+            }]}
+            placeholderTextColor={theme === 'dark' ? '#fff' : '#000'} 
           />
             <Text style={{color: theme === 'dark' ? '#fff' : '#000'}} >
             What task was being performed at the time of the incident? </Text>
-            <components.InputField
-            placeholder=''
+            <TextInput
+            placeholder='Describe the task being performed'
             value={formData.incidentperform}
             onChangeText={(text) =>
               setFormData({ ...formData, incidentperform: text })
             }
-            containerStyle={{ marginBottom: 10 }}
-            placeholderTextColor='gray'
+            style={[styles.input, {color: theme === 'dark' ? '#fff' : '#000', 
+            backgroundColor: theme === 'dark' ? '#333' : '#fff',
+            }]}
+            placeholderTextColor={theme === 'dark' ? '#fff' : '#000'} 
           />
           <Text style={[styles.sectionTitle, {color: theme === 'dark' ? '#fff' : '#000'}]}>Nature of Incident/cause of injury</Text>
           {injuryTypes.map((type) => (
@@ -593,10 +621,17 @@ const IncidentForm = ({theme}) => {
             status={injuryType.includes(type) ? "checked" : "unchecked"}
             onPress={() => handleCheckboxToggle(type)}
             key={type}
+            labelStyle={{ color: theme === 'dark' ? 'white' : 'black' }}
           />
         ))}
         <Text style={{color: theme === 'dark' ? '#fff' : '#000'}} >Other (If Any)</Text>
-        <TextInput value={other} onChangeText={setOther} style={[styles.input, {color: theme === 'dark' ? '#000' : '#000'}]}  />
+        <TextInput 
+        value={other} 
+        placeholder="Enter any additional details"
+        placeholderTextColor={theme === 'dark' ? '#fff' : '#000'}
+        onChangeText={setOther} 
+        style={[styles.input, {color: theme === 'dark' ? '#000' : '#000', 
+        backgroundColor: theme === 'dark' ? '#333' : '#fff'}]}  />
 
         <Text style={[styles.sectionTitle, {color: theme === 'dark' ? '#fff' : '#000'}]}>Specify the Area of Injury</Text>
         {areainjuryTypes.map((type1) => (
@@ -605,10 +640,17 @@ const IncidentForm = ({theme}) => {
             status={areaInjuryType.includes(type1) ? "checked" : "unchecked"}
             onPress={() => handleCheckboxToggle1(type1)}
             key={type1}
+            labelStyle={{ color: theme === 'dark' ? 'white' : 'black' }}
           />
         ))}
         <Text style={{color: theme === 'dark' ? '#fff' : '#000'}} >Other (If Any)</Text>
-        <TextInput value={other1} onChangeText={setOther1} style={[styles.input, {color: theme === 'dark' ? '#000' : '#000'}]}  />
+        <TextInput 
+        value={other1}
+        placeholder="Enter any additional details"
+        placeholderTextColor={theme === 'dark' ? '#fff' : '#000'} 
+        onChangeText={setOther1} 
+        style={[styles.input, {color: theme === 'dark' ? '#000' : '#000', 
+        backgroundColor: theme === 'dark' ? '#333' : '#fff'}]}  />
 
         
         <Text style={[styles.sectionTitle, {color: theme === 'dark' ? '#fff' : '#000'}]}>Treatment and Referral</Text>
@@ -618,10 +660,17 @@ const IncidentForm = ({theme}) => {
             status={treatmentType === type2 ? "checked" : "unchecked"}
             onPress={() => handleCheckboxToggle2(type2)}
             key={type2}
+            labelStyle={{ color: theme === 'dark' ? 'white' : 'black' }}
           />
         ))}
         <Text style={{color: theme === 'dark' ? '#fff' : '#000'}} >Other (If Any)</Text>
-        <TextInput value={other2} onChangeText={setOther2} style={[styles.input, {color: theme === 'dark' ? '#000' : '#000'}]}  />
+        <TextInput 
+        value={other2} 
+        placeholder="Enter any additional details"
+        placeholderTextColor={theme === 'dark' ? '#fff' : '#000'} 
+        onChangeText={setOther2} 
+        style={[styles.input, {color: theme === 'dark' ? '#000' : '#000',
+        backgroundColor: theme === 'dark' ? '#333' : '#fff'}]}  />
 
         <Text style={[styles.sectionTitle, {color: theme === 'dark' ? '#fff' : '#000'}]}>Referral Required:</Text>
         {reffaralTypes.map((type3) => (
@@ -630,28 +679,50 @@ const IncidentForm = ({theme}) => {
             status={reffaralType === type3 ? "checked" : "unchecked"}
             onPress={() => handleCheckboxToggle3(type3)}
             key={type3}
+            labelStyle={{ color: theme === 'dark' ? 'white' : 'black' }}
           />
         ))}
         
         <Text style={{color: theme === 'dark' ? '#fff' : '#000'}}>If YES, Please specify Refferred to:</Text>
-        <TextInput value={other3} onChangeText={setOther3} style={[styles.input, {color: theme === 'dark' ? '#000' : '#000'}]}  />
+        <TextInput 
+        value={other3} 
+        placeholder="Enter referred person's name or department"
+        placeholderTextColor={theme === 'dark' ? '#fff' : '#000'}
+        onChangeText={setOther3} 
+        style={[styles.input, {color: theme === 'dark' ? '#000' : '#000',
+          backgroundColor: theme === 'dark' ? '#333' : '#fff'}]}  />
         <Text style={{color: theme === 'dark' ? '#fff' : '#000'}}>First Aid Attendant:</Text>
-        <TextInput value={firstaid} onChangeText={setFirstAid} style={[styles.input, {color: theme === 'dark' ? '#000' : '#000'}]}  />
+        <TextInput 
+        value={firstaid} 
+        placeholder="Enter first aid attendant's name"
+        placeholderTextColor={theme === 'dark' ? '#fff' : '#000'} 
+        onChangeText={setFirstAid}
+        style={[styles.input, {color: theme === 'dark' ? '#000' : '#000',
+        backgroundColor: theme === 'dark' ? '#333' : '#fff'}]}  />
       
 
         <Text style={[styles.sectionTitle, {color: theme === 'dark' ? '#fff' : '#000', marginBottom:5}]}>Upload Documents (If any)</Text>
 
         <TouchableOpacity onPress={handleDocumentPick} style={styles.uploadButton}>
-         <Text style={[styles.input, {color: theme === 'dark' ? '#000' : '#000'}]} >Upload File</Text>
+         <Text 
+         style={[styles.input, {color: theme === 'dark' ? '#fff' : '#000',
+          backgroundColor: theme === 'dark' ? '#333' : '#fff'}]} >
+          Upload File</Text>
          {documentFile && documentFile.name && (
            <Text style={{ marginTop: 10, color: '#000' }}> 
              Selected File: {documentFile.name}
            </Text>
            )}
-        </TouchableOpacity>
+        </TouchableOpacity> 
 
         <Text style={{color: theme === 'dark' ? '#fff' : '#000'}} >Suggestions for improvement:</Text>
-        <TextInput value={suggestion} onChangeText={setSuggestion} style={[styles.input, {color: theme === 'dark' ? '#000' : '#000'}]}  />
+        <TextInput 
+        value={suggestion} 
+        placeholder="Enter any suggestions for improvement"
+        placeholderTextColor={theme === 'dark' ? '#fff' : '#000'}
+        onChangeText={setSuggestion} 
+        style={[styles.input, {color: theme === 'dark' ? '#000' : '#000',
+          backgroundColor: theme === 'dark' ? '#333' : '#fff'}]}  />
 
         <Button mode="contained" onPress={handleSubmit} style={[styles.button,{marginBottom:140}]}>
           <Text style={{fontWeight:'bold', fontSize:16}} >Submit</Text>  

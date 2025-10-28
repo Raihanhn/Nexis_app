@@ -1,6 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
  xmlns:tools="http://schemas.android.com/tools"
- package="com.nexis365.nexis365" >
+ package="com.nexis365.saas" >
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
@@ -48,6 +48,7 @@
       android:name="com.supersami.foregroundservice.notification_color"
       android:resource="@color/blue"
     />
+    <service android:name="com.transistorsoft.rnbackgroundfetch.HeadlessTask" />
     <service android:name="com.supersami.foregroundservice.ForegroundService"></service>
     <service android:name="com.supersami.foregroundservice.ForegroundServiceTask"></service>
 
@@ -62,7 +63,13 @@
     />
 
      <service android:name="com.rafaelsetragni.backgroundactions.BackgroundActionsTask" android:foregroundServiceType="location"/>
-     <service android:name="com.asterinet.react.bgactions.BackgroundActionsService" />
+     <!-- <service android:name="com.asterinet.react.bgactions.BackgroundActionsService" /> -->
+     <service
+    android:name="com.asterinet.react.bgactions.BackgroundActionsService"
+    android:foregroundServiceType="location"
+    android:exported="false" />
+
+
 
 <service android:name="com.zoontek.rnpermissions.RNPermissionsService" android:exported="false"/>
 
@@ -76,10 +83,6 @@
     </intent-filter>
   </receiver>
 
-         <service
-          android:name="com.transistorsoft.rnbackgroundfetch.HeadlessTask"
-          android:permission="android.permission.BIND_JOB_SERVICE"
-          android:exported="true" /> 
       <service
           android:name="io.invertase.firebase.messaging.ReactNativeFirebaseMessagingService"
           android:exported="true"

@@ -236,9 +236,12 @@ const BocForm = ({theme}) => {
 
           {/* Date Picker */}
         <Text style={{color: theme === 'dark' ? '#fff' : '#000'}}>Date:</Text>
-        <TouchableOpacity onPress={showPicker} style={styles.input}>
+        <TouchableOpacity onPress={showPicker}
+         style={[styles.input,{color: theme === 'dark' ? '#fff' : '#000',
+         backgroundColor: theme === 'dark' ? '#333' : '#fff',}]}>
         <Text style={{
-           color: theme === 'dark' ? '#000' : '#000',
+           color: theme === 'dark' ? '#fff' : '#000',
+           backgroundColor: theme === 'dark' ? '#333' : '#fff',
            paddingTop:4,
            paddingBottom:4,
            }} 
@@ -259,8 +262,8 @@ const BocForm = ({theme}) => {
             value={formData.email}
               placeholder="Email will appear here"
               editable={false}
-            containerStyle={{ marginBottom: 10 }}
-            placeholderTextColor='gray'
+            containerStyle={{ marginBottom: 10,  backgroundColor: theme === 'dark' ? '#333' : '#fff' }}
+          textStyle={{ color: theme === 'dark' ? 'white' : 'black' }}
           />
 
         <Text style={{color: theme === 'dark' ? '#fff' : '#000'}}>Employee Name:</Text>
@@ -270,8 +273,8 @@ const BocForm = ({theme}) => {
             onChangeText={(text) =>
               setFormData({ ...formData, employeeName: text })
             }
-            containerStyle={{ marginBottom: 10 }}
-            placeholderTextColor='gray'
+            containerStyle={{ marginBottom: 10,  backgroundColor: theme === 'dark' ? '#333' : '#fff' }}
+            textStyle={{ color: theme === 'dark' ? 'white' : 'black' }}
           />
 
         <Text style={{color: theme === 'dark' ? '#fff' : '#000'}}>Phone:</Text>
@@ -282,8 +285,8 @@ const BocForm = ({theme}) => {
             onChangeText={(text) =>
               setFormData({ ...formData, phone: text })
             }
-            containerStyle={{ marginBottom: 10 }}
-            placeholderTextColor='gray'
+            containerStyle={{ marginBottom: 10,  backgroundColor: theme === 'dark' ? '#333' : '#fff' }}
+            textStyle={{ color: theme === 'dark' ? 'white' : 'black' }}
           />
 
         <Text style={{color: theme === 'dark' ? '#fff' : '#000'}}>Client Name:</Text>
@@ -304,11 +307,18 @@ const BocForm = ({theme}) => {
             status={bocType.includes(type) ? "checked" : "unchecked"}
             onPress={() => handleCheckboxToggle(type)}
             key={type}
+            labelStyle={{ color: theme === 'dark' ? 'white' : 'black' }}
           />
         ))}
 
         <Text style={{color: theme === 'dark' ? '#fff' : '#000'}}>If Other, Please Specify:</Text>
-        <TextInput value={other} onChangeText={setOther} style={[styles.input, {color: theme === 'dark' ? '#000' : '#000'}]} />
+        <TextInput value={other} 
+        onChangeText={setOther} 
+        placeholder="Enter other reason"
+        placeholderTextColor={theme === 'dark' ? '#fff' : '#000'}
+        style={[styles.input, {color: theme === 'dark' ? '#000' : '#000',
+        backgroundColor: theme === 'dark' ? '#333' : '#fff',
+        }]} />
 
         <Text style={[styles.sectionTitle, {color: theme === 'dark' ? '#fff' : '#000'}]}>BoC Frequency</Text>
         {["Once", "Twice", "Three times", "Four times or more", "Other"].map((freq) => (
@@ -318,11 +328,19 @@ const BocForm = ({theme}) => {
             status={bocFrequency === freq ? "checked" : "unchecked"}
             onPress={() => handleFrequencyChange(freq)} 
             key={freq}
+            labelStyle={{ color: theme === 'dark' ? 'white' : 'black' }}
           />
         ))}
 
           <Text style={{color: theme === 'dark' ? '#fff' : '#000'}}>If Other, Please Specify:</Text>
-          <TextInput value={other1} onChangeText={setOther1} style={[styles.input, {color: theme === 'dark' ? '#000' : '#000'}]}  />
+          <TextInput 
+          value={other1} 
+          onChangeText={setOther1} 
+          placeholder="Enter other reason"
+          placeholderTextColor={theme === 'dark' ? '#fff' : '#000'}
+          style={[styles.input, {color: theme === 'dark' ? '#000' : '#000',
+          backgroundColor: theme === 'dark' ? '#333' : '#fff',
+          }]} />
 
         <Text style={[styles.sectionTitle, {color: theme === 'dark' ? '#fff' : '#000'}]}>BoC Duration</Text>
         {["A couple of minutes or less", "5 minutes or less", "10 minutes or less", "30 minutes or less", "An hour or less", "Majority of the day", "Other"].map((dur) => (
@@ -332,11 +350,19 @@ const BocForm = ({theme}) => {
             status={bocDuration === dur ? "checked" : "unchecked"}
             onPress={() => setBocDuration(dur)}
             key={dur}
+            labelStyle={{ color: theme === 'dark' ? 'white' : 'black' }}
           />
         ))}
 
         <Text style={{color: theme === 'dark' ? '#fff' : '#000'}}>If Other, Please Specify:</Text>
-        <TextInput value={other3} onChangeText={setOther3} style={[styles.input, {color: theme === 'dark' ? '#000' : '#000'}]}  />
+        <TextInput 
+        value={other3} 
+        onChangeText={setOther3} 
+        placeholder="Enter other reason"
+          placeholderTextColor={theme === 'dark' ? '#fff' : '#000'}
+          style={[styles.input, {color: theme === 'dark' ? '#000' : '#000',
+          backgroundColor: theme === 'dark' ? '#333' : '#fff',
+          }]} />
 
         <Text style={[styles.sectionTitle,{marginBottom:10, color: theme === 'dark' ? '#fff' : '#000'}]}>Early Warning Signs</Text>
 
@@ -355,20 +381,44 @@ const BocForm = ({theme}) => {
         />
 
         <Text style={{color: theme === 'dark' ? '#fff' : '#000'}} >Please leave blank if the answer is NO, if YES, please explain the early warning signs</Text>
-        <TextInput value={earlyWarningex} onChangeText={setEarlyWarningex} style={[styles.input, {color: theme === 'dark' ? '#000' : '#000'}]}  />
+        <TextInput 
+        value={earlyWarningex} 
+        placeholder="Describe early warning signs (if any)"
+        placeholderTextColor={theme === 'dark' ? '#fff' : '#000'} 
+        onChangeText={setEarlyWarningex} 
+        style={[styles.input, {color: theme === 'dark' ? '#fff' : '#000',
+        backgroundColor: theme === 'dark' ? '#333' : '#fff',}]}  />
 
         <Text style={[styles.sectionTitle,{marginBottom:10, color: theme === 'dark' ? '#fff' : '#000'}]}>Pre-BoC Situation</Text>
 
         <Text style={{color: theme === 'dark' ? '#fff' : '#000'}} >Participant's Activity Before BoC:</Text>
-        <TextInput value={bocParticipant} onChangeText={setBocParticipant} style={[styles.input, {color: theme === 'dark' ? '#000' : '#000'}]}  />
+        <TextInput 
+        value={bocParticipant} 
+        placeholder="Describe participant's activity before BoC"
+        placeholderTextColor={theme === 'dark' ? '#fff' : '#000'}
+        onChangeText={setBocParticipant} 
+        style={[styles.input, {color: theme === 'dark' ? '#fff' : '#000',
+        backgroundColor: theme === 'dark' ? '#333' : '#fff',}]}  />
 
         <Text style={{color: theme === 'dark' ? '#fff' : '#000'}} >Description of Pre-BoC Situation:</Text>
-        <TextInput value={preBoc} onChangeText={setPreBoc} style={[styles.input, {color: theme === 'dark' ? '#000' : '#000'}]}  />
+        <TextInput 
+        value={preBoc} 
+        placeholder="Briefly describe the situation before BoC"
+         placeholderTextColor={theme === 'dark' ? '#fff' : '#000'}
+        onChangeText={setPreBoc} 
+        style={[styles.input, {color: theme === 'dark' ? '#fff' : '#000',
+        backgroundColor: theme === 'dark' ? '#333' : '#fff',}]}  />
 
         <Text style={[styles.sectionTitle,{marginBottom:10, color: theme === 'dark' ? '#fff' : '#000'}]}>Reinforcement Factors</Text>
 
         <Text style={{color: theme === 'dark' ? '#fff' : '#000'}} >Possible Reinforcements for BoC:</Text>
-        <TextInput value={reinforcement} onChangeText={setReinforcement} style={[styles.input, {color: theme === 'dark' ? '#000' : '#000'}]}  />
+        <TextInput 
+        value={reinforcement} 
+        placeholder="List possible reinforcements for BoC"
+        placeholderTextColor={theme === 'dark' ? '#fff' : '#000'}
+        onChangeText={setReinforcement} 
+        style={[styles.input, {color: theme === 'dark' ? '#fff' : '#000',
+        backgroundColor: theme === 'dark' ? '#333' : '#fff',}]}  />
 
         <Text style={{color: theme === 'dark' ? '#fff' : '#000'}} >Is the participant on their menstrual cycle?</Text>
         <components.Dropdown
@@ -385,10 +435,22 @@ const BocForm = ({theme}) => {
         /> 
 
         <Text style={{color: theme === 'dark' ? '#fff' : '#000'}} >Any Other Information:</Text>
-        <TextInput value={additionalInfo} onChangeText={setAdditionalInfo} style={[styles.input, {color: theme === 'dark' ? '#000' : '#000'}]}  />
+        <TextInput 
+        value={additionalInfo} 
+        placeholder="Enter any other relevant information"
+        placeholderTextColor={theme === 'dark' ? '#fff' : '#000'}
+        onChangeText={setAdditionalInfo} 
+        style={[styles.input, {color: theme === 'dark' ? '#fff' : '#000',
+        backgroundColor: theme === 'dark' ? '#333' : '#fff',}]}  />
 
         <Text style={{color: theme === 'dark' ? '#fff' : '#000'}} >Suggestions for improvement:</Text>
-        <TextInput value={suggestion} onChangeText={setSuggestion} style={[styles.input, {color: theme === 'dark' ? '#000' : '#000'}]}  />
+        <TextInput 
+        value={suggestion} 
+        placeholder="Enter your suggestions for improvement"
+        placeholderTextColor={theme === 'dark' ? '#fff' : '#000'}
+        onChangeText={setSuggestion} 
+        style={[styles.input, {color: theme === 'dark' ? '#fff' : '#000',
+        backgroundColor: theme === 'dark' ? '#333' : '#fff',}]}  />
 
         <Button mode="contained" onPress={handleSubmit} style={[styles.button,{marginBottom:140, color: theme === 'dark' ? '#fff' : '#000'}]}>
           <Text style={{fontWeight:'bold', fontSize:16}} >Submit</Text>  

@@ -28,6 +28,7 @@ const InputField = ({
   mapPinIcon,
   hashIcon,
   briefcaseIcon,
+  textStyle, 
 }) => {
   const [focus, setFocus] = useState(false);
 
@@ -126,6 +127,7 @@ const InputField = ({
           ...theme.fonts.SourceSansPro_Regular_16,
           lineHeight: theme.fonts.SourceSansPro_Regular_16.fontSize * 1.2,
           color: theme.colors.mainDark,
+           ...textStyle, 
         }}
         onFocus={() => {
           setFocus(true);

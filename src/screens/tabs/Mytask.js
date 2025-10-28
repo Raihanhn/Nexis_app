@@ -189,7 +189,7 @@ const Mytask = () => {
       paddingHorizontal: 15,
       borderBottomWidth: 1,
       borderBottomColor: theme === 'dark' ? '#333' : '#DDD',
-      backgroundColor: theme === 'dark' ? '#252525' : '#FFF',
+      backgroundColor: theme === 'dark' ? '#444' : '#FFF',
     },
     tableCell: {
       flex: 4,
@@ -205,7 +205,7 @@ const Mytask = () => {
       position: 'absolute',
       top: 4,
       left: '46%',
-      backgroundColor: theme === 'dark' ? '#2A2A2A' : '#FFF',
+      backgroundColor: theme === 'dark' ? '#444' : '#FFF',
       borderWidth: 1,
       borderColor: theme === 'dark' ? '#444' : '#CCC',
       borderRadius: 5,

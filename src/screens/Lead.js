@@ -5,19 +5,25 @@ import {
   StyleSheet,
   TouchableWithoutFeedback,
   ScrollView,
+  Dimensions,
 } from 'react-native';
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { components } from '../components';
 import { useTheme } from '../constants/ThemeContext';
 import BottomTabBar from './tabs/BottomTabBar';
 import CampaignForm from './CampaignForm';
 import ViewCampaign from './ViewCampaign';
 import LeadForm from './LeadForm';
+import ViewLead from './ViewLead';
+
+const { width } = Dimensions.get('window');
 
 const Lead = () => {
   const { theme } = useTheme();
   const [showDropdown, setShowDropdown] = useState(false);
-  const [selectedAction, setSelectedAction] = useState(null);
+  const [selectedAction, setSelectedAction] = useState('Create Lead'); // default
+  const [dropdownTop, setDropdownTop] = useState(0);
+  const dropdownButtonRef = useRef(null);
 
   const renderHeader = () => (
     <components.Header
@@ -32,37 +38,37 @@ const Lead = () => {
     setShowDropdown(false);
   };
 
+  const toggleDropdown = () => {
+    dropdownButtonRef.current?.measure((fx, fy, w, h, px, py) => {
+      setDropdownTop(py + h);
+      setShowDropdown(!showDropdown);
+    });
+  };
 
   const Content = () => (
     <TouchableWithoutFeedback onPress={() => setShowDropdown(false)}>
       <ScrollView contentContainerStyle={[styles.contentContainer, { paddingBottom: 120 }]}>
-        <TouchableOpacity
-          style={styles.dropdownToggle}
-          onPress={() => setShowDropdown(!showDropdown)}
-        >
-          <Text style={styles.dropdownToggleText}>Select Action ▼</Text>
-        </TouchableOpacity>
+        <View style={styles.actionRow}>
+          {/* Left: Selected Action Button */}
+          <TouchableOpacity style={styles.actionButtonDisabled} disabled>
+            <Text style={[styles.actionButtonText1, { color: theme === 'dark' ? '#fff' : '#000',}]}>{selectedAction}</Text>
+          </TouchableOpacity>
 
-        {showDropdown && (
-          <View style={styles.dropdown}>
-            <TouchableOpacity style={styles.dropdownItem} onPress={() => handlePress('Create Lead')}>
-              <Text style={styles.dropdownItemText}>Create Lead</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.dropdownItem} onPress={() => handlePress('Create Campaign')}>
-              <Text style={styles.dropdownItemText}>Create Campaign</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.dropdownItem} onPress={() => handlePress('View Campaign')}>
-              <Text style={styles.dropdownItemText}>View Campaign</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.dropdownItem} onPress={() => handlePress('View Lead')}>
-              <Text style={styles.dropdownItemText}>View Lead</Text>
-            </TouchableOpacity>
-          </View>
-        )}
+          {/* Right: Dropdown Toggle */}
+          <TouchableOpacity
+            style={styles.actionButton}
+            onPress={toggleDropdown}
+            ref={dropdownButtonRef}
+          >
+            <Text style={styles.actionButtonText}>Select Action ▼</Text>
+          </TouchableOpacity>
+        </View>
 
-      {selectedAction === 'Create Campaign' && <CampaignForm theme={theme} />}
-      {selectedAction === 'Create Lead' && <LeadForm theme={theme} />}
-      {selectedAction === 'View Campaign' && <ViewCampaign theme={theme} />}
+        {/* Render Selected Form */}
+        {selectedAction === 'Create Campaign' && <CampaignForm theme={theme} />}
+        {selectedAction === 'Create Lead' && <LeadForm theme={theme} />}
+        {selectedAction === 'View Campaign' && <ViewCampaign theme={theme} />}
+        {selectedAction === 'View Lead' && <ViewLead theme={theme} />}
       </ScrollView>
     </TouchableWithoutFeedback>
   );
@@ -71,6 +77,23 @@ const Lead = () => {
     <View style={{ flex: 1, backgroundColor: theme === 'dark' ? '#333' : '#f5f5f5' }}>
       {renderHeader()}
       {Content()}
+      {/* Absolute Dropdown */}
+      {showDropdown && (
+        <View style={[styles.dropdown, { top: dropdownTop, right: 16,  backgroundColor: theme === 'dark' ? '#333' : '#fff' }]}>
+          <TouchableOpacity style={styles.dropdownItem} onPress={() => handlePress('Create Lead')}>
+            <Text style={[styles.dropdownItemText, {color: theme === 'dark' ? '#fff' : '#000'}]}>Create Lead</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.dropdownItem} onPress={() => handlePress('Create Campaign')}>
+            <Text style={[styles.dropdownItemText, {color: theme === 'dark' ? '#fff' : '#000'}]}>Create Campaign</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.dropdownItem} onPress={() => handlePress('View Campaign')}>
+            <Text style={[styles.dropdownItemText, {color: theme === 'dark' ? '#fff' : '#000'}]}>View Campaign</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.dropdownItem} onPress={() => handlePress('View Lead')}>
+            <Text style={[styles.dropdownItemText, {color: theme === 'dark' ? '#fff' : '#000'}]}>View Lead</Text>
+          </TouchableOpacity>
+        </View>
+      )}
       <BottomTabBar />
     </View>
   );
@@ -81,25 +104,49 @@ const styles = StyleSheet.create({
     padding: 16,
     flexGrow: 1,
   },
-  dropdownToggle: {
-    backgroundColor: '#007bff',
-    padding: 12,
-    borderRadius: 8,
+  actionRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 16,
   },
-  dropdownToggleText: {
+  actionButton: {
+    backgroundColor: '#21AFF0',
+    paddingVertical: 12,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+    width: 160,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  actionButtonDisabled: {
+    paddingVertical: 12,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center', 
+  },
+  actionButtonText1: {
+    fontWeight: 'bold',
+    textAlign: 'center',
+    fontSize: 20,
+  },
+  actionButtonText: {
     color: '#fff',
     fontWeight: 'bold',
     textAlign: 'center',
+    fontSize: 14,
   },
   dropdown: {
-    marginTop: 10,
+    position: 'absolute',
+    zIndex: 1000,
     backgroundColor: '#fff',
     borderRadius: 8,
-    elevation: 3,
+    elevation: 5,
     shadowColor: '#000',
     shadowOpacity: 0.1,
     shadowRadius: 4,
     paddingVertical: 8,
+    width: 160,
   },
   dropdownItem: {
     padding: 12,
@@ -109,7 +156,6 @@ const styles = StyleSheet.create({
   dropdownItemText: {
     fontSize: 16,
   },
-
 });
 
 export default Lead;

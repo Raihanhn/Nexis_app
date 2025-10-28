@@ -1,5 +1,4 @@
 import React from 'react';
-import {View, Text} from 'react-native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import CRM from '../screens/CRM';
 import HRM from '../screens/HRM';
@@ -14,16 +13,13 @@ import TimeSheet from '../screens/TimeSheet';
 import AnalogClock from '../screens/AnalogClock';
 import Task from '../screens/Task';
 import MyJobs from '../screens/MyJobs';
-import BocForm from '../screens/BocForm';
-import EodForm from '../screens/EodForm';
-import Nextbot from '../screens/Nextbot';
 
 
 const Stack = createNativeStackNavigator();
 
 import {screens} from '../screens';
 
-import TabNavigator from './TabNavigator';
+import TabNavigator from './TabNavigator'; 
 
 const StackNavigator = () => {
   return (
@@ -104,6 +100,31 @@ const StackNavigator = () => {
         options={{headerShown: false}}
       />
         <Stack.Screen
+        name='DocumentManager'
+        component={screens.DocumentManager}
+        options={{headerShown: false}}
+      />
+       <Stack.Screen
+        name='ViewCategory'
+        component={screens.ViewCategory}
+        options={{headerShown: false}}
+      />
+       <Stack.Screen
+        name='AddCategory'
+        component={screens.AddCategory}
+        options={{headerShown: false}}
+      />
+       <Stack.Screen
+        name='AddDocument'
+        component={screens.AddDocument}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name='ViewDocument'
+        component={screens.ViewDocument}
+        options={{headerShown: false}}
+      />
+        <Stack.Screen
         name='IncidentForm'
         component={screens.IncidentForm}
         options={{headerShown: false}}
@@ -124,8 +145,98 @@ const StackNavigator = () => {
         options={{headerShown: false}}
       />
        <Stack.Screen
+        name='EditCampaignForm'
+        component={screens.EditCampaignForm}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name='EditLeadForm'
+        component={screens.EditLeadForm}
+        options={{headerShown: false}} 
+      />
+      <Stack.Screen
         name='Nextbot'
         component={screens.Nextbot}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name='Call'
+        component={screens.Call}
+        options={{headerShown: false}}
+      />
+       <Stack.Screen
+        name='Email'
+        component={screens.Email}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name='Minutes'
+        component={screens.Minutes}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name='Cases'
+        component={screens.Cases}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name='Quote'
+        component={screens.Quote}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name='Deal'
+        component={screens.Deal}
+        options={{headerShown: false}}
+      />
+       <Stack.Screen
+        name='Onboard'
+        component={screens.Onboard}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name='Contract'
+        component={screens.Contract}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name='EditCall'
+        component={screens.EditCall}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name='EditEmail'
+        component={screens.EditEmail}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name='EditMinutes'
+        component={screens.EditMinutes}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name='EditCases'
+        component={screens.EditCases}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name='EditQuote'
+        component={screens.EditQuote}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name='EditDeal'
+        component={screens.EditDeal}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name='EditContract'
+        component={screens.EditContract}
+        options={{headerShown: false}}
+      />
+        <Stack.Screen
+        name='ViewLead' 
+        component={screens.ViewLead}
         options={{headerShown: false}}
       />
        <Stack.Screen

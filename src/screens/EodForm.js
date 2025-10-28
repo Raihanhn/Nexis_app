@@ -280,11 +280,11 @@ const EodForm = ({theme}) => {
 
           {/* Date Picker */}
           <Text style={{color: theme === 'dark' ? '#fff' : '#000'}} >Date:</Text>
-        <TouchableOpacity onPress={showPicker} style={styles.input}>
+        <TouchableOpacity onPress={showPicker} style={[styles.input, {color: theme === 'dark' ? '#fff' : '#000', backgroundColor: theme === 'dark' ? '#333' : '#fff' }]}>
           <Text style={{
-           color: theme === 'dark' ? '#000' : '#000',
+           color: theme === 'dark' ? '#fff' : '#000',
            paddingTop:4,
-           paddingBottom:4,
+           paddingBottom:4, 
            }} 
           >{date.toDateString()}</Text>
         </TouchableOpacity>
@@ -303,8 +303,8 @@ const EodForm = ({theme}) => {
           value={formData.email}
           placeholder=""
           editable={false}
-          containerStyle={{ marginBottom: 10 }}
-          placeholderTextColor='gray'
+          containerStyle={{ marginBottom: 10,  backgroundColor: theme === 'dark' ? '#333' : '#fff' }}
+          textStyle={{ color: theme === 'dark' ? 'white' : 'black' }}
           />
 
         <Text style={{color: theme === 'dark' ? '#fff' : '#000'}} >Employee Name:</Text>
@@ -314,8 +314,9 @@ const EodForm = ({theme}) => {
           onChangeText={(text) =>
             setFormData({ ...formData, employeeName: text })
           }
-          containerStyle={{ marginBottom: 10 }}
+          containerStyle={{ marginBottom: 10,  backgroundColor: theme === 'dark' ? '#333' : '#fff' }}
           placeholderTextColor='gray'
+          textStyle={{ color: theme === 'dark' ? 'white' : 'black' }}
           />
 
         <Text style={{color: theme === 'dark' ? '#fff' : '#000'}} >Phone:</Text>
@@ -326,8 +327,9 @@ const EodForm = ({theme}) => {
           onChangeText={(text) =>
             setFormData({ ...formData, phone: text })
           }
-          containerStyle={{ marginBottom: 10 }}
+          containerStyle={{ marginBottom: 10, backgroundColor: theme === 'dark' ? '#333' : '#fff'  }}
           placeholderTextColor='gray'
+          textStyle={{ color: theme === 'dark' ? 'white' : 'black' }}
           />
 
         <Text style={{color: theme === 'dark' ? '#fff' : '#000'}} >Client Name:</Text>
@@ -363,11 +365,17 @@ const EodForm = ({theme}) => {
             status={eodType.includes(type) ? "checked" : "unchecked"}
             onPress={() => handleCheckboxToggle(type)}
             key={type}
-          />
+            labelStyle={{ color: theme === 'dark' ? 'white' : 'black' }}
+          /> 
         ))}
 
         <Text style={{color: theme === 'dark' ? '#fff' : '#000'}} >If Other, Please Specify:</Text>
-        <TextInput value={other} onChangeText={setOther} style={[styles.input, {color: theme === 'dark' ? '#000' : '#000'}]}  />
+        <TextInput value={other}
+        onChangeText={setOther}
+        placeholder="Enter other reason"
+        placeholderTextColor={theme === 'dark' ? '#fff' : '#000'}
+        style={[styles.input, {color: theme === 'dark' ? '#fff' : '#000',
+        backgroundColor: theme === 'dark' ? '#333' : '#fff',}]}  />
 
         <Text style={[styles.sectionTitle, {color: theme === 'dark' ? '#fff' : '#000'}]}>Behavior</Text>
         <Text style={{color: theme === 'dark' ? '#fff' : '#000'}} >Challenges in behavior today.</Text>
@@ -387,8 +395,16 @@ const EodForm = ({theme}) => {
         />
 
        <Text style={{color: theme === 'dark' ? '#fff' : '#000'}} >And what challenges did you encounter during your shift today?</Text>
-       <Text style={{color: theme === 'dark' ? '#fff' : '#000'}} >Eating, Walking, Personal Care, Listening/Comprehending (If Required)</Text>
-       <TextInput value={challenge} onChangeText={setChallenge} style={[styles.input, {color: theme === 'dark' ? '#000' : '#000'}]}  />
+       <Text 
+       style={{color: theme === 'dark' ? '#fff' : '#000'}}
+        >Eating, Walking, Personal Care, Listening/Comprehending (If Required)</Text>
+       <TextInput 
+        value={challenge}
+        placeholder="Describe your challenges here..."
+        placeholderTextColor={theme === 'dark' ? '#fff' : '#000'} 
+        onChangeText={setChallenge}
+        style={[styles.input, {color: theme === 'dark' ? '#fff' : '#000',
+        backgroundColor: theme === 'dark' ? '#333' : '#fff',}]}  />
 
        <Text style={{color: theme === 'dark' ? '#fff' : '#000'}} >How challenging was their activity? (On a rating of 1 to 10).</Text>
         <components.Dropdown
@@ -426,7 +442,13 @@ const EodForm = ({theme}) => {
         />
         <Text style={{color: theme === 'dark' ? '#fff' : '#000'}} >Communication is how they communicate, do they use verbal, sign, or body language. Is their speech clear and understandable? If they communicate through text, is it legible? Was their speech slurred or hard to understand?</Text>
         <Text style={{color: theme === 'dark' ? '#fff' : '#000'}} >Please specify any communication challenges you faced: (if any)</Text>
-        <TextInput value={communication1} onChangeText={setCommunication1} style={[styles.input, {color: theme === 'dark' ? '#000' : '#000'}]}  />
+        <TextInput
+        value={communication1}
+        placeholder="Describe any communication challenges faced..."
+        placeholderTextColor={theme === 'dark' ? '#fff' : '#000'}
+        onChangeText={setCommunication1}
+        style={[styles.input, {color: theme === 'dark' ? '#fff' : '#000',
+        backgroundColor: theme === 'dark' ? '#333' : '#fff',}]}  />
 
         <Text style={{color: theme === 'dark' ? '#fff' : '#000'}} >How effective was their communication? (On a rating of 1 to 10)..</Text>
         <components.Dropdown
@@ -466,7 +488,13 @@ const EodForm = ({theme}) => {
         />
         <Text style={{color: theme === 'dark' ? '#fff' : '#000'}} >A mobility impairment is a disability that affects movement ranging from gross motor skills, such as walking, to fine motor movement, involving manipulation of objects by hand.</Text>
         <Text style={{color: theme === 'dark' ? '#fff' : '#000'}} >If yes, please provide details and any actions taken: (if any)</Text>
-        <TextInput value={wellbeing1} onChangeText={setWellbeing1} style={[styles.input, {color: theme === 'dark' ? '#000' : '#000'}]}  />
+        <TextInput
+        value={wellbeing1}
+        placeholder="Describe mobility challenges and actions taken..."
+        placeholderTextColor={theme === 'dark' ? '#fff' : '#000'} 
+        onChangeText={setWellbeing1}
+        style={[styles.input, {color: theme === 'dark' ? '#fff' : '#000',
+        backgroundColor: theme === 'dark' ? '#333' : '#fff',}]}  />
 
         <Text style={{color: theme === 'dark' ? '#fff' : '#000'}} >how effective was their movement? (On a rating of 1 to 10).</Text>
         <components.Dropdown
@@ -491,7 +519,13 @@ const EodForm = ({theme}) => {
 
         <Text style={[styles.sectionTitle, {color: theme === 'dark' ? '#fff' : '#000'}]}>Socialize</Text>
         <Text style={{color: theme === 'dark' ? '#fff' : '#000'}} >Please keep in mind that socializing also refers to the participants ability to engage and disengage in conversation respectfully. Are they able to maintain a conversation? are they able to direct and redirect their attention or are they easily distracted? do they follow common courtesy and use pleasantries like `excuse me` or `sorry to cut you off` etc.:</Text>
-        <TextInput value={socialize1} onChangeText={setSocialize1} style={[styles.input, {color: theme === 'dark' ? '#000' : '#000'}]}  />
+        <TextInput
+        value={socialize1}
+        placeholder="Describe the participant's socializing abilities..."
+        placeholderTextColor={theme === 'dark' ? '#fff' : '#000'}
+        onChangeText={setSocialize1}
+        style={[styles.input, { color: theme === 'dark' ? '#fff' : '#000',
+        backgroundColor: theme === 'dark' ? '#333' : '#fff',}]}  />
         <Text style={{color: theme === 'dark' ? '#fff' : '#000'}} >how effective was their movement? (On a rating of 1 to 10).</Text>
         <components.Dropdown
           items={[
@@ -528,7 +562,12 @@ const EodForm = ({theme}) => {
           style={{ flex: 1, marginRight: 10 }}
         />
          <Text style={{color: theme === 'dark' ? '#fff' : '#000'}} >If yes, please provide details:</Text>
-         <TextInput value={learn2} onChangeText={setLearn2} style={[styles.input, {color: theme === 'dark' ? '#000' : '#000'}]}  />
+         <TextInput 
+         value={learn2}
+         placeholder="provide the details..."
+         placeholderTextColor={theme === 'dark' ? '#fff' : '#000'}
+         onChangeText={setLearn2}
+         style={[styles.input, {color: theme === 'dark' ? '#fff' : '#000', backgroundColor: theme === 'dark' ? '#333' : '#fff',}]}  />
 
 
          <Text style={[styles.sectionTitle, {color: theme === 'dark' ? '#fff' : '#000'}]}>Staff Notification</Text>
@@ -546,7 +585,13 @@ const EodForm = ({theme}) => {
           style={{ flex: 1, marginRight: 10 }}
         />
         <Text style={{color: theme === 'dark' ? '#fff' : '#000'}} >If yes, please provide details: (if required)</Text>
-        <TextInput value={staff1} onChangeText={setStaff1} style={styles.input} />
+        <TextInput
+         value={staff1} 
+         placeholder="provide the details..."
+         placeholderTextColor={theme === 'dark' ? '#fff' : '#000'}
+         onChangeText={setStaff1} 
+         style={[styles.input, {color: theme === 'dark' ? '#fff' : '#000', 
+         backgroundColor: theme === 'dark' ? '#333' : '#fff',}]}  />
 
         <Text style={{color: theme === 'dark' ? '#fff' : '#000'}} >how was the notification activities? (On a rating of 1 to 10).</Text>
         <components.Dropdown
@@ -571,7 +616,13 @@ const EodForm = ({theme}) => {
 
         <Text style={[styles.sectionTitle, {color: theme === 'dark' ? '#fff' : '#000'}]}>Engagement</Text>
         <Text style={{color: theme === 'dark' ? '#fff' : '#000'}} >What are the key activities you engaged in with the clients today? Describe in key points</Text>
-        <TextInput value={engagement1} onChangeText={setEngagement1} style={[styles.input, {color: theme === 'dark' ? '#000' : '#000'}]}  />
+        <TextInput 
+        value={engagement1} 
+        placeholder="Key activities with client today..."
+        placeholderTextColor={theme === 'dark' ? '#fff' : '#000'}
+        onChangeText={setEngagement1} 
+        style={[styles.input, {color: theme === 'dark' ? '#fff' : '#000', 
+        backgroundColor: theme === 'dark' ? '#333' : '#fff',}]}  />
         <Text style={{color: theme === 'dark' ? '#fff' : '#000'}} >how did they engage? (On a rating of 1 to 10).</Text>
         <components.Dropdown
           items={[
@@ -608,7 +659,13 @@ const EodForm = ({theme}) => {
           style={{ flex: 1, marginRight: 10 }}
         />
         <Text style={{color: theme === 'dark' ? '#fff' : '#000'}} >If NO, please describe in key notes why?</Text>
-        <TextInput value={manage1} onChangeText={setManage1} style={[styles.input, {color: theme === 'dark' ? '#000' : '#000'}]}  />
+        <TextInput 
+        value={manage1} 
+        placeholder="Describe why, in key notes..."
+        placeholderTextColor={theme === 'dark' ? '#fff' : '#000'}
+        onChangeText={setManage1} 
+        style={[styles.input, {color: theme === 'dark' ? '#fff' : '#000', 
+        backgroundColor: theme === 'dark' ? '#333' : '#fff',}]}  />
 
         <Text style={{color: theme === 'dark' ? '#fff' : '#000'}} >how did they self manage? (On a rating of 1 to 10).</Text>
         <components.Dropdown
@@ -646,7 +703,13 @@ const EodForm = ({theme}) => {
           style={{ flex: 1, marginRight: 10 }}
         />
         <Text style={{color: theme === 'dark' ? '#fff' : '#000'}} >If YES, please briefly explain:</Text>
-        <TextInput value={risk1} onChangeText={setRisk1} style={[styles.input, {color: theme === 'dark' ? '#000' : '#000'}]}  />
+        <TextInput 
+        value={risk1}  
+        placeholder="Briefly explain..."
+        placeholderTextColor={theme === 'dark' ? '#fff' : '#000'}
+        onChangeText={setRisk1} 
+        style={[styles.input, {color: theme === 'dark' ? '#fff' : '#000', 
+        backgroundColor: theme === 'dark' ? '#333' : '#fff',}]}  />
 
         <Text style={{color: theme === 'dark' ? '#fff' : '#000'}} >how severe was the incident? (On a rating of 1 to 10).</Text>
         <components.Dropdown
@@ -684,16 +747,40 @@ const EodForm = ({theme}) => {
           style={{ flex: 1, marginRight: 10 }}
         />
         <Text style={{color: theme === 'dark' ? '#fff' : '#000'}} >If NO, please specify any challenges you faced in documentation:</Text>
-        <TextInput value={documentation1} onChangeText={setDocumentation1} style={[styles.input, {color: theme === 'dark' ? '#000' : '#000'}]}  />
+        <TextInput 
+        value={documentation1}
+        placeholder="Specify any challenges faced..."
+        placeholderTextColor={theme === 'dark' ? '#fff' : '#000'} 
+        onChangeText={setDocumentation1} 
+        style={[styles.input, {color: theme === 'dark' ? '#fff' : '#000',
+        backgroundColor: theme === 'dark' ? '#333' : '#fff',}]}  />
         <Text style={{color: theme === 'dark' ? '#fff' : '#000'}} >Suggestions for improvement: Do you have any suggestions for improving the support provided or any process within the team?</Text>
-        <TextInput value={documentation2} onChangeText={setDocumentation2} style={[styles.input, {color: theme === 'dark' ? '#000' : '#000'}]}  />
+        <TextInput 
+        value={documentation2} 
+        placeholder="Provide your suggestions for improvement..."
+        placeholderTextColor={theme === 'dark' ? '#fff' : '#000'}
+        onChangeText={setDocumentation2} 
+        style={[styles.input, {color: theme === 'dark' ? '#fff' : '#000',
+        backgroundColor: theme === 'dark' ? '#333' : '#fff',}]}  />
 
 
         <Text style={[styles.sectionTitle, {color: theme === 'dark' ? '#fff' : '#000'}]}>Self-Reflection (Summary)</Text>
         <Text style={{color: theme === 'dark' ? '#fff' : '#000'}} >How do you feel about your performance today?</Text>
-        <TextInput value={summary1} onChangeText={setSummary1} style={[styles.input, {color: theme === 'dark' ? '#000' : '#000'}]}  /> 
+        <TextInput 
+        value={summary1} 
+        placeholder="Share your thoughts on your performance today..."
+        placeholderTextColor={theme === 'dark' ? '#fff' : '#000'}
+        onChangeText={setSummary1} 
+        style={[styles.input, {color: theme === 'dark' ? '#fff' : '#000',
+        backgroundColor: theme === 'dark' ? '#333' : '#fff',}]}  /> 
         <Text style={{color: theme === 'dark' ? '#fff' : '#000'}} >Suggestions for improvement:</Text>
-        <TextInput value={summary2} onChangeText={setSummary2} style={[styles.input, {color: theme === 'dark' ? '#000' : '#000'}]}  />
+        <TextInput 
+        value={summary2} 
+        placeholder="What improvements would you suggest?"
+        placeholderTextColor={theme === 'dark' ? '#fff' : '#000'}
+        onChangeText={setSummary2} 
+        style={[styles.input, {color: theme === 'dark' ? '#fff' : '#000',
+        backgroundColor: theme === 'dark' ? '#333' : '#fff',}]}  />
 
         <Button mode="contained" onPress={handleSubmit} style={[styles.button,{marginBottom:140, color: theme === 'dark' ? '#fff' : '#000'}]}>
           <Text style={{fontWeight:'bold', fontSize:16}} >Submit</Text>  

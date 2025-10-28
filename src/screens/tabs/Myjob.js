@@ -134,7 +134,7 @@ const Myjob = () => {
         borderRadius: 8,
         marginHorizontal: 10,
         marginBottom: 20,
-        backgroundColor: theme === 'dark' ? '#1E1E1E' : '#F9F9F9',
+        backgroundColor: theme === 'dark' ? '#444' : '#F9F9F9',
         elevation: 4, 
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 4 },
@@ -143,7 +143,7 @@ const Myjob = () => {
       },
       tableHeader: {
         flexDirection: 'row',
-        backgroundColor: theme === 'dark' ? '#2A2A2A' : '#EAEAEA',
+        backgroundColor: theme === 'dark' ? '#555' : '#EAEAEA',
         paddingVertical: 12,
         paddingHorizontal: 15,
         alignItems: 'center',
@@ -165,7 +165,7 @@ const Myjob = () => {
         paddingHorizontal: 15,
         borderBottomWidth: 1,
         borderBottomColor: theme === 'dark' ? '#333' : '#DDD',
-        backgroundColor: theme === 'dark' ? '#252525' : '#FFF',
+        backgroundColor: theme === 'dark' ? '#444' : '#FFF',
       },
       tableCell: {
         flex: 3,
