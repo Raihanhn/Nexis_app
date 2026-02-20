@@ -29,7 +29,7 @@ const BottomTabBar = () => {
 
   const tabs = [
     { name: 'Tasks', icon: svg.TaskSvg },
-    { name: 'Jobs', icon: svg.WatchSvg },
+    { name: 'Appointments', icon: svg.WatchSvg },
     { name: 'Home', icon: svg.PercentageSvg },
     { name: 'Documents', icon: svg.DocumentSvg },
     { name: 'Timesheet', icon: svg.DashboardSvg }, 
@@ -83,7 +83,7 @@ const BottomTabBar = () => {
             <Text
               style={{
                 marginTop: 4,
-                fontSize: 12,
+                fontSize: 7,
                 color:
                   theme === 'dark'
                     ? (currentTabScreen === tab.name ? '#000' : '#3F5870')

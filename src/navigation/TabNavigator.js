@@ -37,7 +37,7 @@ const TabNavigator = () => {
       icon: svg.TaskSvg,
     },
     {
-      name: 'Jobs',
+      name: 'Appointments',
       icon: svg.WatchSvg,
     },
     {
@@ -71,7 +71,7 @@ const TabNavigator = () => {
   };
 
   const renderHeader = () => {
-    if (['Tasks', 'Documents', 'Jobs', 'Home', 'Timesheet'].includes(currentTabScreen)) {
+    if (['Tasks', 'Documents', 'Appointments', 'Home', 'Timesheet'].includes(currentTabScreen)) {
       return (
         <components.Header
           creditCard={true}
@@ -86,7 +86,7 @@ const TabNavigator = () => {
       <View key={reloadKey} style={{flex: 1}}>
         {currentTabScreen === 'Tasks' && <Mytask />}
         {currentTabScreen === 'Documents' && <Documents />}
-        {currentTabScreen === 'Jobs' && <Myjob />}
+        {currentTabScreen === 'Appointments' && <Myjob />}
         {currentTabScreen === 'Home' && <Dashboard />}
         {currentTabScreen === 'Timesheet' && <Timesheet />}
       </View>

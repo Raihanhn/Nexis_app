@@ -2,7 +2,7 @@ import {useState, useEffect, useCallback, useRef} from 'react';
 import {useFocusEffect} from '@react-navigation/native';
 import {
   View,
-  Text, 
+  Text,
   StyleSheet,
   TouchableOpacity,
   Alert,
@@ -10,6 +10,7 @@ import {
   PermissionsAndroid,
   Platform,
   ScrollView,
+  ActivityIndicator,
 } from 'react-native';
 import BottomTabBar from './tabs/BottomTabBar';
 import {components} from '../components';
@@ -20,15 +21,19 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {launchCamera} from 'react-native-image-picker';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Feather';
-import {useTheme} from '../constants/ThemeContext'; 
-import BackgroundFetch from "react-native-background-fetch";
-import { initBackgroundLocationTracking, resetLocationStage } from './BackgroundLocationService';
+import {useTheme} from '../constants/ThemeContext';
+import BackgroundFetch from 'react-native-background-fetch';
+import {
+  initBackgroundLocationTracking,
+  resetLocationStage,
+} from './BackgroundLocationService';
 
 const AttendanceRecord = () => {
   const [imageUri, setImageUri] = useState(null);
-  const [isClockedIn, setIsClockedIn] = useState(false); 
+  const [isClockedIn, setIsClockedIn] = useState(false);
   const [elapsedTime, setElapsedTime] = useState(0);
   const [timerRunning, setTimerRunning] = useState(false);
+  const [loading, setLoading] = useState(false);
   const navigation = useNavigation();
   const route = useRoute(); // Access params from the route
   const {jobData} = route.params; // Destructure the jobData
@@ -76,23 +81,26 @@ const AttendanceRecord = () => {
   }, [isClockedIn]);
 
   const requestLocationPermission = async () => {
-  if (Platform.OS === 'android') {
-    const fine = await PermissionsAndroid.request(
-      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-    );
+    if (Platform.OS === 'android') {
+      const fine = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+      );
 
-    let background = true;
-    if (Platform.Version >= 29) { // Android 10+
-      background = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.ACCESS_BACKGROUND_LOCATION 
+      let background = true;
+      if (Platform.Version >= 29) {
+        // Android 10+
+        background = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.ACCESS_BACKGROUND_LOCATION,
+        );
+      }
+
+      return (
+        fine === PermissionsAndroid.RESULTS.GRANTED &&
+        background === PermissionsAndroid.RESULTS.GRANTED
       );
     }
-
-    return fine === PermissionsAndroid.RESULTS.GRANTED &&
-           background === PermissionsAndroid.RESULTS.GRANTED;
-  }
-  return true; // iOS handled via plist
-};
+    return true; // iOS handled via plist
+  };
 
   // Get Current Location
   const getCurrentLocation = async () => {
@@ -110,35 +118,54 @@ const AttendanceRecord = () => {
           );
           reject(error);
         },
-        {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
+        // {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
+        {enableHighAccuracy: true, timeout: 10000, maximumAge: 30000},
       );
     });
   };
 
   // Open Camera and Capture Image
+  // const captureImage = async () => {
+  //   const options = {
+  //     mediaType: 'photo',
+  //     quality: 0.7,
+  //     saveToPhotos: false,
+  //     includeBase64: false,
+  //     isFrontCamera: true,
+  //   };
+
+  //   const response = await launchCamera(options);
+
+  //   if (response.didCancel) {
+  //     Alert.alert('Cancelled', 'User cancelled image capture');
+  //     return null;
+  //   } else if (response.errorCode) {
+  //     Alert.alert('Error', `Camera Error: ${response.errorMessage}`);
+  //     return null;
+  //   } else if (!response.assets || response.assets.length === 0) {
+  //     Alert.alert('Error', 'No image captured. Try again.');
+  //     return null;
+  //   }
+
+  //   return response.assets[0];
+  // };
+
   const captureImage = async () => {
-    const options = {
-      mediaType: 'photo',
-      quality: 0.7,
-      saveToPhotos: false,
-      includeBase64: false,
-      isFrontCamera: true,
-    };
+    return new Promise(async (resolve) => {
+      const response = await launchCamera({
+        mediaType: 'photo',
+        cameraType: 'front',
+        quality: 0.6,
+        saveToPhotos: false,
+        presentationStyle: 'fullScreen',
+      });
 
-    const response = await launchCamera(options);
-
-    if (response.didCancel) {
-      Alert.alert('Cancelled', 'User cancelled image capture');
-      return null;
-    } else if (response.errorCode) {
-      Alert.alert('Error', `Camera Error: ${response.errorMessage}`);
-      return null;
-    } else if (!response.assets || response.assets.length === 0) {
-      Alert.alert('Error', 'No image captured. Try again.');
-      return null;
-    }
-
-    return response.assets[0];
+      if (response.didCancel || response.errorCode) {
+        resolve(null);
+      } else {
+        resolve(response.assets[0]);
+      }
+    });
   };
 
   // Inside your useEffect
@@ -158,7 +185,7 @@ const AttendanceRecord = () => {
   }, [fromClockOut]);
 
   const loadClockInTime = async () => {
-    const lastClockIn = await AsyncStorage.getItem('lastClockIn'); 
+    const lastClockIn = await AsyncStorage.getItem('lastClockIn');
     if (lastClockIn) {
       const formatted = moment
         .unix(parseInt(lastClockIn))
@@ -175,6 +202,7 @@ const AttendanceRecord = () => {
   );
 
   const handleClockIn = async () => {
+    setLoading(true);
     try {
       // Fetch job start time
       if (!job?.stime) {
@@ -222,13 +250,14 @@ const AttendanceRecord = () => {
 
       // Capture image
       const image = await captureImage();
+      setLoading(false);
       if (!image) return;
       setImageUri(image.uri);
 
       const formData = new FormData();
       formData.append('ref_db', ref_db);
       formData.append('jobId', job.id);
-      formData.append('clockIn', JSON.stringify(clockIn)); 
+      formData.append('clockIn', JSON.stringify(clockIn));
       formData.append('latitude', latitude);
       formData.append('longitude', longitude);
       formData.append('images', {
@@ -238,13 +267,13 @@ const AttendanceRecord = () => {
       });
 
       // Upload clock-in data
-      console.log("🚀 Sending Clock-In Data:", {
+      console.log('🚀 Sending Clock-In Data:', {
         ref_db,
         jobId: job.id,
         clockIn,
         latitude,
         longitude,
-        image: image.uri
+        image: image.uri,
       });
 
       // Upload clock-in data
@@ -257,7 +286,7 @@ const AttendanceRecord = () => {
       );
 
       // Store clock-in details
-      const newRecord = { 
+      const newRecord = {
         clockIn,
         clockOut: null,
         image: image.uri,
@@ -285,9 +314,9 @@ const AttendanceRecord = () => {
       console.log('Last Clock-In Timestamp clockin:', lastClockIn);
       console.log('Is Clocked In clockin:', isClockedIn);
 
-      resetLocationStage(); 
+      resetLocationStage();
       await initBackgroundLocationTracking();
-      console.log("✅ Background location tracking started");
+      console.log('✅ Background location tracking started');
 
       loadClockInTime();
       Alert.alert('Success', responseUpload.data.message);
@@ -298,6 +327,8 @@ const AttendanceRecord = () => {
     } catch (error) {
       console.error('Clock-In Error:', error);
       Alert.alert('Error', 'Please enable location to clock in.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -343,17 +374,16 @@ const AttendanceRecord = () => {
         name: image.fileName,
       });
 
-       console.log("🚀 Sending Clock-Out Data:", {
-      ref_db,
-      jobId: job.id,
-      clockOut,
-      latitude,
-      longitude,
-      eod,
-      km,
-      image: image.uri,
-    });
-
+      console.log('🚀 Sending Clock-Out Data:', {
+        ref_db,
+        jobId: job.id,
+        clockOut,
+        latitude,
+        longitude,
+        eod,
+        km,
+        image: image.uri,
+      });
 
       const responseUpload = await axios.post(
         'https://app.nexis365.com/api/clock-out',
@@ -383,16 +413,16 @@ const AttendanceRecord = () => {
       const currentJobId = await AsyncStorage.getItem('currentJobId');
       const isClockedIn = await AsyncStorage.getItem('isClockedIn');
 
-      console.log( 
+      console.log(
         'Attendance Records clockout:',
         JSON.parse(attendanceRecords),
       ); // Parse to view as an object
       console.log('Current Job ID after Clock Out:', currentJobId);
       console.log('Is Clocked In after Clock Out:', isClockedIn);
 
-        BackgroundFetch.stop();
-        console.log("🛑 Background tracking stopped after Clock Out");
-        resetLocationStage();
+      BackgroundFetch.stop();
+      console.log('🛑 Background tracking stopped after Clock Out');
+      resetLocationStage();
 
       // Show success message
       Alert.alert('Success', responseUpload.data.message, [
@@ -442,6 +472,19 @@ const AttendanceRecord = () => {
       flex: 1,
       backgroundColor: theme === 'dark' ? '#333' : '#fff',
     },
+
+    loaderOverlay: {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      backgroundColor: 'rgba(0,0,0,0.3)', // semi-transparent overlay
+      justifyContent: 'center',
+      alignItems: 'center',
+      zIndex: 9999, // ensure it appears above everything
+    },
+
     title: {
       marginTop: 20,
       fontSize: 20,
@@ -631,7 +674,7 @@ const AttendanceRecord = () => {
     input: {
       height: 50,
       borderWidth: 1,
-      borderColor: '#21AFF0', 
+      borderColor: '#21AFF0',
       borderRadius: 8,
       paddingHorizontal: 12,
       fontSize: 15,
@@ -639,10 +682,34 @@ const AttendanceRecord = () => {
       color: theme === 'dark' ? '#fff' : '#000',
       marginTop: 5,
     },
+
+    inputWrapper: {
+      width: 300, // similar visual weight to clock-in boxes
+      marginTop: 20,
+    },
+
+    inputTitle: {
+      fontSize: 14,
+      fontWeight: 'bold',
+      marginTop: 5,
+      marginBottom: 6,
+      color: theme === 'dark' ? '#fff' : '#000',
+    },
+
+    textArea: {
+      height: 100, // makes it a textarea
+      paddingTop: 10,
+    },
   });
 
   return (
     <View style={styles.container}>
+      {loading && (
+        <View style={styles.loaderOverlay}>
+          <ActivityIndicator size='large' color='#21AFF0' />
+        </View>
+      )}
+
       {renderHeader()}
       <ScrollView
         contentContainerStyle={{paddingBottom: 100}}
@@ -708,20 +775,37 @@ const AttendanceRecord = () => {
             </Text>
           )}
 
-          <TextInput
-            placeholder='Enter EOD Note'
-            value={eod}
-            onChangeText={setEod}
-            style={styles.input}
-          />
+          <View style={styles.inputWrapper}>
+            {/* EOD Title */}
+            <Text style={styles.inputTitle}>
+              What is your Feedback for Today? (Short EOD)
+            </Text>
 
-          <TextInput
-            placeholder='Enter KM'
-            value={km}
-            onChangeText={setKm}
-            keyboardType='numeric'
-            style={styles.input}
-          />
+            {/* EOD TextArea */}
+            <TextInput
+              placeholder='Enter EOD Note'
+              placeholderTextColor={theme === 'dark' ? '#aaa' : '#666'}
+              value={eod}
+              onChangeText={setEod}
+              style={[styles.input, styles.textArea]}
+              multiline
+              numberOfLines={4}
+              textAlignVertical='top'
+            />
+
+            {/* KM Title */}
+            <Text style={styles.inputTitle}>KM Travelled:</Text>
+
+            {/* KM Input */}
+            <TextInput
+              placeholder='Enter KM'
+              placeholderTextColor={theme === 'dark' ? '#aaa' : '#666'}
+              value={km}
+              onChangeText={setKm}
+              keyboardType='numeric'
+              style={styles.input}
+            />
+          </View>
 
           <View style={styles.buttonRow}>
             <TouchableOpacity

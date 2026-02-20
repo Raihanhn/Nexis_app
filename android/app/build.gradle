@@ -1,5 +1,6 @@
 apply plugin: "com.android.application"
 apply plugin: "com.facebook.react"
+apply plugin: 'com.google.gms.google-services'
 
 react {
    
@@ -14,12 +15,12 @@ def reactNativeArchitectures() {
 }
 
 android {
-    namespace "com.nexis365.saas"
+    namespace "com.app.nexis365"
     compileSdkVersion rootProject.ext.compileSdkVersion
     ndkVersion rootProject.ext.ndkVersion
 
     defaultConfig {
-        applicationId "com.nexis365.saas"
+        applicationId "com.app.nexis365"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
@@ -65,20 +66,12 @@ android {
             }
         }
     }
-
-    // compileOptions {
-    //     sourceCompatibility JavaVersion.VERSION_11
-    //     targetCompatibility JavaVersion.VERSION_11
-    // }
 }
 
 dependencies {
+    implementation(platform("org.jetbrains.kotlin:kotlin-bom:1.8.0"))
     implementation("com.facebook.react:react-android:0.71.6") // Specify the React Native version explicitly
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.0.0")
-    implementation platform('com.google.firebase:firebase-bom:33.5.1')
-    implementation 'com.google.firebase:firebase-analytics'
-    implementation 'com.google.firebase:firebase-messaging:23.4.1'
-
 
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}")
     debugImplementation("com.facebook.flipper:flipper-network-plugin:${FLIPPER_VERSION}") {
@@ -114,5 +107,7 @@ project.ext.vectoricons = [
 ]
 
 apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"
-apply plugin: 'com.google.gms.google-services'
+
+
+
 

@@ -2,7 +2,8 @@ import React, { useEffect } from 'react';
 import { Provider } from 'react-redux';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { NavigationContainer } from '@react-navigation/native';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 import StackNavigator from './src/navigation/StackNavigator';
 import { store } from './src/store/store';
 import { ThemeProvider } from './src/constants/ThemeContext';
@@ -16,91 +17,141 @@ import messaging from '@react-native-firebase/messaging';
 import PushNotification from 'react-native-push-notification';
 import RNLocation from 'react-native-location'
 
-RNLocation.configure({
-  distanceFilter: 100, // Meters
-  desiredAccuracy: {
-    ios: "best",
-    android: "balancedPowerAccuracy"
-  },
-  // Android only
-  androidProvider: "auto",
-  interval: 5000, // Milliseconds
-  fastestInterval: 10000, // Milliseconds
-  maxWaitTime: 5000, // Milliseconds
-  // iOS Only
-  activityType: "other",
-  allowsBackgroundLocationUpdates: true,
-  headingFilter: 1, // Degrees
-  headingOrientation: "portrait",
-  pausesLocationUpdatesAutomatically: false,
-  showsBackgroundLocationIndicator: false,
-})
 
 const App = () => {
-  PushNotification.configure({
-    onNotification: function (notification) {
-      console.log('[LOCAL NOTIF] =>', notification);
-    },
-    requestPermissions: Platform.OS === 'ios',
-  });
+ 
 
-  PushNotification.createChannel(
-    {
-      channelId: 'background-location',
-      channelName: 'Background Tracking Alerts',
-      channelDescription: 'A channel for background location updates',
-      soundName: 'default',
-      importance: 4,
-      vibrate: true,
-    },
-    (created) => console.log(`🔔 Notification channel '${created}' created`)
-  );
-
+   /* ------------------ App Startup Logic ------------------ */
   useEffect(() => {
+    configureLocation();
+    configurePushNotification();
+    createNotificationChannel();
     requestUserPermission();
-    const unsubscribe = messaging().onMessage(async remoteMessage => {
-      Alert.alert('New Notification', JSON.stringify(remoteMessage.notification?.body || ''));
-    });
 
-    messaging().onNotificationOpenedApp(remoteMessage => {
-      console.log('Notification opened from background state:', remoteMessage.notification);
-    });
+    const unsubscribeOnMessage = messaging().onMessage(
+      async remoteMessage => {
+        PushNotification.localNotification({
+          channelId: 'background-location',
+          title: 'New Notification',
+          message: remoteMessage.notification?.body || '',
+        });
+      }
+    );
+
+    const unsubscribeOnOpen = messaging().onNotificationOpenedApp(
+      remoteMessage => {
+        console.log(
+          'Opened from background:',
+          remoteMessage.notification
+        );
+      }
+    );
 
     messaging().getInitialNotification().then(remoteMessage => {
       if (remoteMessage) {
-        console.log('Notification caused app to open from quit state:', remoteMessage.notification);
+        console.log(
+          'Opened from quit state:',
+          remoteMessage.notification
+        );
       }
     });
 
-    return unsubscribe;
+     // 🔄 FCM TOKEN REFRESH HANDLER (ADD HERE)
+  const unsubscribeTokenRefresh = messaging().onTokenRefresh(
+  async token => {
+    try {
+      const email = await AsyncStorage.getItem('secondaryEmail');
+      const lastToken = await AsyncStorage.getItem('lastFcmToken');
+
+      // 🚫 No user or same token → do nothing
+      if (!email || token === lastToken) {
+        return;
+      }
+
+      // 💾 Save new token locally
+      await AsyncStorage.setItem('lastFcmToken', token);
+
+      // 📡 Send updated token to backend
+      await axios.post('https://app.nexis365.com/api/update-fcm', {
+        email,
+        fcmToken: token,
+      });
+
+      console.log('🔄 FCM token refreshed & saved');
+    } catch (error) {
+      console.log('❌ Failed to update refreshed FCM token', error);
+    }
+  }
+);
+
+
+    return () => {
+      unsubscribeOnMessage();
+      unsubscribeOnOpen();
+      unsubscribeTokenRefresh();
+    };
   }, []);
 
+  /* ------------------ Location Config ------------------ */
+  const configureLocation = () => {
+    RNLocation.configure({
+      distanceFilter: 100,
+      desiredAccuracy: {
+        ios: 'best',
+        android: 'balancedPowerAccuracy',
+      },
+      androidProvider: 'auto',
+      interval: 5000,
+      fastestInterval: 10000,
+      maxWaitTime: 5000,
+      allowsBackgroundLocationUpdates: true,
+      activityType: 'other',
+      pausesLocationUpdatesAutomatically: false,
+      showsBackgroundLocationIndicator: false,
+    });
+  };
+
+  /* ------------------ Push Notification ------------------ */
+  const configurePushNotification = () => {
+    PushNotification.configure({
+      onNotification: notification => {
+        console.log('[LOCAL NOTIFICATION]', notification);
+      },
+      requestPermissions: Platform.OS === 'ios',
+    });
+  };
+
+  const createNotificationChannel = () => {
+    PushNotification.createChannel(
+      {
+        channelId: 'background-location',
+        channelName: 'Background Tracking Alerts',
+        channelDescription: 'Background location & push alerts',
+        importance: 4,
+        vibrate: true,
+      },
+      created =>
+        console.log(
+          `🔔 Notification channel created: ${created}`
+        )
+    );
+  };
+
+  /* ------------------ Firebase Permission ------------------ */
   const requestUserPermission = async () => {
     const authStatus = await messaging().requestPermission();
-    const enabled = 
+    const enabled =
       authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
       authStatus === messaging.AuthorizationStatus.PROVISIONAL;
 
     if (enabled) {
-      console.log('Notification permission status:', authStatus);
-      getFcmToken();
+      console.log('Notification permission:', authStatus);
+        console.log('Notification permission granted');
     } else {
-      Alert.alert('Push Notification permission denied');
+      Alert.alert('Permission denied', 'Notifications disabled');
     }
   };
 
-  const getFcmToken = async () => {
-    try {
-      const fcmToken = await messaging().getToken();
-      if (fcmToken) {
-        console.log('FCM Token:', fcmToken);
-      } else {
-        console.log('Failed to get FCM token');
-      }
-    } catch (error) {
-      console.error('Error fetching FCM token:', error);
-    }
-  };
 
   return (
     <SafeAreaProvider>

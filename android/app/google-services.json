@@ -1,36 +1,26 @@
 {
   "project_info": {
-    "project_number": "535144762860",
-    "project_id": "nexis365-447911",
-    "storage_bucket": "nexis365-447911.firebasestorage.app"
+    "project_number": "109920628518",
+    "project_id": "nexis365-app",
+    "storage_bucket": "nexis365-app.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:535144762860:android:532af4f856ec725b98c4c9",
+        "mobilesdk_app_id": "1:109920628518:android:300dbe0d5e59b17a1c9be7",
         "android_client_info": {
-          "package_name": "com.nexis365.saas"
+          "package_name": "com.app.nexis365"
         }
       },
-      "oauth_client": [
-        {
-          "client_id": "535144762860-frfv6gn3vh5idrffl0dbmdlh3dbguhkq.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
+      "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyDnktD6__k-3JThxXNPspvZTTlQ3RDNcHo"
+          "current_key": "AIzaSyDYjZ9YowMpDh7GuqqNOqOexQbJ5feK50c"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "535144762860-frfv6gn3vh5idrffl0dbmdlh3dbguhkq.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+          "other_platform_oauth_client": []
         }
       }
     }

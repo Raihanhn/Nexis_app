@@ -4,9 +4,9 @@ buildscript {
     ext {
         buildToolsVersion = "33.0.0"
         minSdkVersion = 23
-        compileSdkVersion = 33
+        compileSdkVersion = 34
         targetSdkVersion = 33
-        kotlinVersion = "1.6.10"
+        kotlinVersion = "1.8.0"
 
         // We use NDK 23 which has both M1 support and is the side-by-side NDK version from AGP.
         ndkVersion = "23.1.7779620"
@@ -18,7 +18,7 @@ buildscript {
     dependencies {
         classpath 'com.android.tools.build:gradle:7.3.1'
         classpath 'com.facebook.react:react-native-gradle-plugin:0.71.6'
-        classpath 'com.google.gms:google-services:4.3.14'
+        classpath 'com.google.gms:google-services:4.3.15'
     }
 }
 
@@ -36,9 +36,30 @@ allprojects {
         url("${project(':react-native-background-fetch').projectDir}/libs")
         }
     }
+
+    // ADD THIS BLOCK STARTING HERE:
+    configurations.all {
+        resolutionStrategy {
+            // This forces the versions that contain 'MenuHost'
+            force "androidx.appcompat:appcompat:1.6.1"
+            force "androidx.core:core:1.9.0"
+            force "androidx.core:core-ktx:1.9.0"
+            force "androidx.annotation:annotation:1.6.0"
+
+            // ADD THESE LINES TO FIX THE "NullPointerException" and "mergeExtDexDebug"
+            force "androidx.lifecycle:lifecycle-viewmodel-savedstate:2.5.1"
+            force "androidx.lifecycle:lifecycle-livedata-core:2.5.1"
+            force "androidx.lifecycle:lifecycle-viewmodel:2.5.1"
+            force "androidx.lifecycle:lifecycle-runtime:2.5.1"
+
+        }
+    }
+
+
 }
 
 
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+
